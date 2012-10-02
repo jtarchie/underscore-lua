@@ -116,3 +116,99 @@ describe("#find", function()
     assert.equals(value, 3)
   end)
 end)
+
+describe("#select", function()
+  it("returns all the even numbers", function()
+    local result = _.select({1,2,3,4,5,6}, function(value) return value % 2 == 0 end)
+    assert.same({2,4,6}, result)
+  end)
+
+  it("aliased as #filter", function()
+    local result = _.filter({1,2,3,4,5,6}, function(value) return value % 2 == 0 end)
+    assert.same({2,4,6}, result)
+  end)
+end)
+
+describe("#reject", function()
+  it("returns a list of non even numbers", function()
+    local result = _.reject({1,2,3,4,5,6}, function(value) return value % 2 == 0 end)
+    assert.same({1,3,5}, result)
+  end)
+end)
+
+describe("#all", function()
+  it("handles true/false/nil values", function()
+    assert.is.truthy(_.all({true, true, true}))
+    assert.is_not.truthy(_.all({true, false, true}))
+    assert.is_not.truthy(_.all({nil, nil, nil}))
+  end)
+
+  it("returns true for all even numbers", function()
+    assert.truthy(_.all({2,4,6,8}, function(v) return v % 2 == 0 end))
+    assert.is_not.truthy(_.all({2,4,6,9}, function(v) return v % 2 == 0 end))
+  end)
+
+  it("aliased as #every", function()
+    assert.truthy(_.every({2,4,6,8}, function(v) return v % 2 == 0 end))
+    assert.is_not.truthy(_.every({2,4,6,9}, function(v) return v % 2 == 0 end))
+  end)
+end)
+
+describe("#any", function()
+  it("returns true with any true value", function()
+    assert.truthy(_.any({true, true, true}))
+    assert.truthy(_.any({true, false, true}))
+    assert.truthy(_.any({nil, true, nil}))
+  end)
+
+  it("return false without any true value", function()
+    assert.is_not.truthy(_.any({false, false, false}))
+    assert.is_not.truthy(_.any({nil, false, nil}))
+  end)
+
+  it("returns true for any even numbers", function()
+    assert.truthy(_.any({0,4,7,13}, function(v) return v % 2 == 0 end))
+    assert.is_not.truthy(_.any({1,3,9}, function(v) return v % 2 == 0 end))
+  end)
+
+  it("aliased to #same", function()
+    assert.truthy(_.same({0,4,7,13}, function(v) return v % 2 == 0 end))
+    assert.is_not.truthy(_.same({1,3,9}, function(v) return v % 2 == 0 end))
+  end)
+end)
+
+describe("#include", function()
+end)
+
+describe("#pluck", function()
+end)
+
+describe("#where", function()
+end)
+
+describe("#max", function()
+end)
+
+describe("#min", function()
+end)
+
+describe("#sortBy", function()
+end)
+
+describe("#groupBy", function()
+end)
+
+describe("#countBy", function()
+end)
+
+describe("#sortedIndex", function()
+end)
+
+describe("#shuffle", function()
+end)
+
+describe("#toArray", function()
+end)
+
+describe("#size", function()
+end)

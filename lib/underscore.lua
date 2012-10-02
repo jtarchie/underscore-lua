@@ -70,9 +70,48 @@ function find(values, func)
   return result 
 end
 
--- private
+function select(values, func)
+  local found = {}
+  each(values, function(value)
+    if func(value) then
+      table.insert(found, value)
+    end
+  end)
+
+  return found
+end
+
+function reject(values, func)
+  local found = {}
+  each(values, function(value)
+    if not func(value) then
+      table.insert(found, value)
+    end
+  end)
+
+  return found
+end
+
+function all(values, func)
+  if next(values) == nil then return false end
+
+  func = func or function(value) return value end
+
+  local found = true
+  each(values, function(value)
+    if found and not func(value) then
+      found = false
+    end
+  end)
+
+  return found
+end
 
 function any(values, func)
+  if next(values) == nil then return false end
+
+  func = func or function(value) return value end
+
   local found = false
   each(values, function(value)
     if not found and func(value) then
@@ -82,6 +121,8 @@ function any(values, func)
 
   return found
 end
+
+-- private
 
 function reverse(values)
   local reversed = {}
@@ -96,4 +137,7 @@ collect = map
 inject = reduce
 foldl = reduce
 foldr = reduceRight
-detect = find 
+detect = find
+filter = select
+every = all
+same = any
