@@ -1,6 +1,8 @@
-local table, ipairs, pairs = table, ipairs, pairs 
+local table, ipairs, pairs, math = table, ipairs, pairs, math 
 
 module(..., package.seeall)
+
+local identity = function(value) return value end
 
 function each(values, func)
   local pairing = pairs
@@ -95,11 +97,11 @@ end
 function all(values, func)
   if next(values) == nil then return false end
 
-  func = func or function(value) return value end
+  func = func or identity
 
   local found = true
-  each(values, function(value)
-    if found and not func(value) then
+  each(values, function(value, index)
+    if found and not func(value, index) then
       found = false
     end
   end)
@@ -108,18 +110,76 @@ function all(values, func)
 end
 
 function any(values, func)
-  if next(values) == nil then return false end
+  if is_empty(values) then return false end
 
-  func = func or function(value) return value end
+  func = func or identity
 
   local found = false
-  each(values, function(value)
-    if not found and func(value) then
+  each(values, function(value, index)
+    if not found and func(value, index) then
       found = true
     end
   end)
 
   return found
+end
+
+function include(values, v)
+  return any(values, function(value)
+    return v == value
+  end)
+end
+
+function pluck(values, key)
+  local found = {}
+  each(values, function(value)
+    table.insert(found, value[key])
+  end)
+
+  return found
+end
+
+function where(values, properties)
+  local found = {}
+  return select(values, function(value)
+    return all(properties, function(v, k)
+      return value[k] == v
+    end)
+  end)
+end
+
+function max(values, func)
+  if is_empty(values) then
+    return -math.huge
+  elseif type(func) == "function" then
+    local max = {computed=-math.huge}
+    each(values, function(value)
+      local computed = func(value)
+      if computed >= max.computed then
+        max = {computed=computed, value=value}
+      end
+    end)
+    return max.value
+  else
+    return math.max(unpack(values))
+  end
+end
+
+function min(values, func)
+  if is_empty(values) then
+    return math.huge
+  elseif type(func) == "function" then
+    local min = {computed=math.huge}
+    each(values, function(value)
+      local computed = func(value)
+      if computed < min.computed then
+        min = {computed=computed, value=value}
+      end
+    end)
+    return min.value
+  else
+    return math.min(unpack(values))
+  end
 end
 
 -- private
@@ -133,6 +193,10 @@ function reverse(values)
   return reversed
 end
 
+function is_empty(values)
+  return next(values) == nil
+end
+
 collect = map
 inject = reduce
 foldl = reduce
@@ -141,3 +205,4 @@ detect = find
 filter = select
 every = all
 same = any
+contains = include

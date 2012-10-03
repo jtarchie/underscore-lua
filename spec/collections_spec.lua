@@ -178,21 +178,79 @@ describe("#any", function()
 end)
 
 describe("#include", function()
+  it("returns true if the value is in the array", function()
+    assert.truthy(_.include({1,2,3}, 2))
+    assert.is_not.truthy(_.include({1,4,3}, 2))
+  end)
+
+  it("returns true when the value is in the object", function()
+    assert.truthy(_.include({one=1,two=2,three=3}, 2))
+    assert.is_not.truthy(_.include({one=1,four=4,three=3}, 2))
+  end)
+
+  it("aliased to #contains", function()
+    assert.truthy(_.contains({1,2,3}, 2))
+  end)
 end)
 
 describe("#pluck", function()
+  it("pulls names out of the object", function()
+    local people = {{name="moe", age=30}, {name="curly", age=50}}
+    assert.same(_.pluck(people, 'name'), {"moe","curly"})
+  end)
 end)
 
 describe("#where", function()
+  local list = {{a=1, b=2}, {a=2, b=2}, {a=1, b=3}, {a=1, b=4}}
+
+  it("returns a list of elements that matches the properties", function()
+    local results = _.where(list, {a=1})
+    assert.equals(#results, 3)
+    assert.equals(results[#results].b, 4)
+
+    results = _.where(list, {b=2})
+    assert.equals(#results, 2)
+    assert.equals(results[1].a, 1)
+  end)
 end)
 
 describe("#max", function()
+  it("returns a max number from a list", function()
+    assert.equals(_.max({1,2,3}, 3))
+    assert.equals(_.max({2,3,6,1}, 6))
+    assert.equals(_.max({-1,8,-8}, 8))
+  end)
+
+  it("returns infinity for an empty array", function()
+    assert.equals(_.max({}), -math.huge)
+  end)
+
+  it("performs a computation based max", function()
+    assert.equals(_.max({1,2,3}, function(v) return -v end), 1)
+  end)
 end)
 
 describe("#min", function()
+  it("returns a min number from a list", function()
+    assert.equals(_.min({1,2,3}, 1))
+    assert.equals(_.min({2,3,6,1}, 1))
+    assert.equals(_.min({-1,8,-8}, -8))
+  end)
+
+  it("returns infinity for an empty array", function()
+    assert.equals(_.min({}), math.huge)
+  end)
+
+  it("performs a computation based max", function()
+    assert.equals(_.min({1,2,3}, function(v) return -v end), 3)
+  end)
+end)
+
+describe("#invoke", function()
 end)
 
 describe("#sortBy", function()
+  
 end)
 
 describe("#groupBy", function()
