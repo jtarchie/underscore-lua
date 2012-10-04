@@ -182,6 +182,17 @@ function min(values, func)
   end
 end
 
+function invoke(values, func, ...)
+  local args = {...}
+  return collect(values, function(value)
+    if type(func) == "function" then
+      return func(value, unpack(args))
+    else
+      return value[func](value, unpack(args))
+    end
+  end)
+end
+
 -- private
 
 function reverse(values)

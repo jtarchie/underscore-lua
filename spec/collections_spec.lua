@@ -247,6 +247,24 @@ describe("#min", function()
 end)
 
 describe("#invoke", function()
+  local values = {{2,1,3}, {6,5,4}}
+
+  it("sorts the arrays together", function()
+    local first = function(array) return array[1] end
+    values[1].first = first
+    values[2].first = first
+    assert.same(_.invoke(values, 'first'), {2,6})
+  end)
+
+  it("invokes the passed function", function()
+    local second = function(array) return array[2] end
+    assert.same(_.invoke(values, second), {1,5})
+  end)
+
+  it("passes the arguments to the invoked function", function()
+    local index = function(array, index) return array[index] end
+    assert.same(_.invoke(values, index, 3), {3,4})
+  end)
 end)
 
 describe("#sortBy", function()
