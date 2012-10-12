@@ -95,7 +95,7 @@ function reject(values, func)
 end
 
 function all(values, func)
-  if next(values) == nil then return false end
+  if is_empty(values) then return false end
 
   func = func or identity
 
@@ -191,6 +191,25 @@ function invoke(values, func, ...)
       return value[func](value, unpack(args))
     end
   end)
+end
+
+function sort_by(values, func)
+  func = func or identity
+
+  if type(func) == "string" then
+    sorted_func = function(a,b)
+      return a[func](a) < b[func](b)
+    end
+  else
+    sorted_func = function(a,b)
+      if a == nil then return false end
+      if b == nil then return true end
+      return func(a) < func(b)
+    end
+  end
+
+  table.sort(values, sorted_func)
+  return values
 end
 
 -- private

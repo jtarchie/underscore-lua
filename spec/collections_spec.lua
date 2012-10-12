@@ -267,8 +267,23 @@ describe("#invoke", function()
   end)
 end)
 
-describe("#sortBy", function()
-  
+describe("#sort_by", function()
+  it("sorts by object properties", function()
+    local people = {{name='curly', age=50}, {name='moe', age=30}}
+    people = _.sort_by(people, function(person) return person.age end)
+    assert.same(_.pluck(people, 'name'), {'moe', 'curly'})
+  end)
+
+  it("sorts by value by default", function()
+    local list = {4, 1, 3, 2}
+    assert.same(_.sort_by(list), {1,2,3,4});
+  end)
+
+  it("sorts by function name reference", function()
+    local list = {"one", "two", "three", "four", "five"}
+    local sorted = _.sort_by(list, 'len')
+    assert.same(sorted, {'one','two','four','five','three'}) 
+  end)
 end)
 
 describe("#groupBy", function()
