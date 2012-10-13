@@ -2,8 +2,23 @@ local table, ipairs, pairs, math = table, ipairs, pairs, math
 
 module(..., package.seeall)
 
+-- private
 local identity = function(value) return value end
 
+local reverse = function(values)
+  local reversed = {}
+  each(values, function(value, index)
+    table.insert(reversed, 1, value)
+  end)
+
+  return reversed
+end
+
+local is_empty = function(values)
+  return next(values) == nil
+end
+
+-- public 
 function each(values, func)
   local pairing = pairs
   if values[1] then pairing = ipairs end
@@ -183,28 +198,30 @@ function min(values, func)
 end
 
 function invoke(values, func, ...)
-  local args = {...}
-  return collect(values, function(value)
-    if type(func) == "function" then
-      return func(value, unpack(args))
-    else
+  local invoke_func, args = func, {...}
+  
+  if type(func) == "string" then
+    invoke_func = function(value, ...)
       return value[func](value, unpack(args))
     end
+  end
+
+  return collect(values, function(value)
+    return invoke_func(value, unpack(args))
   end)
 end
 
 function sort_by(values, func)
   func = func or identity
+  local sorted_func = function(a,b)
+    if a == nil then return false end
+    if b == nil then return true end
+    return func(a) < func(b)
+  end
 
   if type(func) == "string" then
     sorted_func = function(a,b)
       return a[func](a) < b[func](b)
-    end
-  else
-    sorted_func = function(a,b)
-      if a == nil then return false end
-      if b == nil then return true end
-      return func(a) < func(b)
     end
   end
 
@@ -213,14 +230,12 @@ function sort_by(values, func)
 end
 
 function group_by(values, func)
-  local result = {}
+  local group_func, result = func, {}
 
   if type(func) == "string" then
     group_func = function(v)
       return v[func](v)
     end
-  else
-    group_func = func
   end
 
   each(values, function(value)
@@ -233,14 +248,12 @@ function group_by(values, func)
 end
 
 function count_by(values, func)
-  local result = {}
+  local count_func, result = func, {}
 
   if type(func) == "string" then
     count_func = function(v)
       return v[func](v)
     end
-  else
-    count_func = func
   end
 
   each(values, function(value)
@@ -250,21 +263,6 @@ function count_by(values, func)
   end)
 
   return result
-end
-
--- private
-
-function reverse(values)
-  local reversed = {}
-  each(values, function(value, index)
-    table.insert(reversed, 1, value)
-  end)
-
-  return reversed
-end
-
-function is_empty(values)
-  return next(values) == nil
 end
 
 collect = map
