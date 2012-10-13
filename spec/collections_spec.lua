@@ -330,10 +330,51 @@ describe("#sortedIndex", function()
 end)
 
 describe("#shuffle", function()
+  it("returns original list in random order", function()
+    local list = {1,2,3,4,5,6,7,8,9,10}
+    local shuffled = _.shuffle(list)
+
+    assert.is_not.same(list, shuffled)
+    assert.same(list, table.sort(shuffled))
+  end)
 end)
 
-describe("#toArray", function()
+describe("#to_array", function()
+  it("clones the array", function()
+    local list = {1,2,3,4,5}
+    local cloned = _.to_array(list)
+
+    assert.same(list, cloned)
+    assert.is_not.equal(list, cloned)
+  end)
+
+  it("flattens an object to an array", function()
+    local list = {one=1,two=2,three=3}
+    local array = _.to_array(list)
+
+    assert.is_not.equal(list, array)
+    assert.same(table.sort(array), {1,2,3})
+  end)
 end)
 
 describe("#size", function()
+  it("returns the size of an object", function()
+    assert.equals(_.size({one=1,two=2,three=3}), 3)
+  end)
+  
+  it("returns the size of an array", function()
+    assert.equals(_.size({1,2,3,4}), 4)
+  end)
+
+  it("returns the size of variable arguments", function()
+    assert.equals(_.size(1,2,3,4,5), 5)
+  end)
+
+  it("returns the size of string", function()
+    assert.equals(_.size("hello world"), 11)
+  end)
+
+  it("returns the size of nil", function()
+    assert.equals(_.size(nil), 0)
+  end)
 end)

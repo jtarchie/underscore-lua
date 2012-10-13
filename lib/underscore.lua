@@ -1,4 +1,4 @@
-local table, ipairs, pairs, math = table, ipairs, pairs, math 
+local table, ipairs, pairs, math, string = table, ipairs, pairs, math, string
 
 module(..., package.seeall)
 
@@ -17,6 +17,23 @@ end
 local is_empty = function(values)
   return next(values) == nil
 end
+
+local is_object = function(values)
+  return type(values) == "table"
+end
+
+local is_string = function(value)
+  return type(value) == "string" 
+end
+
+local is_function = function(value)
+  return type(value) == "function"
+end
+
+local is_array = function(values)
+  return is_object(values) and values[1]
+end
+
 
 -- public 
 function each(values, func)
@@ -166,7 +183,7 @@ end
 function max(values, func)
   if is_empty(values) then
     return -math.huge
-  elseif type(func) == "function" then
+  elseif is_function(func) then
     local max = {computed=-math.huge}
     each(values, function(value)
       local computed = func(value)
@@ -183,7 +200,7 @@ end
 function min(values, func)
   if is_empty(values) then
     return math.huge
-  elseif type(func) == "function" then
+  elseif is_function(func) then
     local min = {computed=math.huge}
     each(values, function(value)
       local computed = func(value)
@@ -200,7 +217,7 @@ end
 function invoke(values, func, ...)
   local invoke_func, args = func, {...}
   
-  if type(func) == "string" then
+  if is_string(func) then
     invoke_func = function(value, ...)
       return value[func](value, unpack(args))
     end
@@ -219,7 +236,7 @@ function sort_by(values, func)
     return func(a) < func(b)
   end
 
-  if type(func) == "string" then
+  if is_string(func) then
     sorted_func = function(a,b)
       return a[func](a) < b[func](b)
     end
@@ -232,7 +249,7 @@ end
 function group_by(values, func)
   local group_func, result = func, {}
 
-  if type(func) == "string" then
+  if is_string(func) then
     group_func = function(v)
       return v[func](v)
     end
@@ -250,7 +267,7 @@ end
 function count_by(values, func)
   local count_func, result = func, {}
 
-  if type(func) == "string" then
+  if is_string(func) then
     count_func = function(v)
       return v[func](v)
     end
@@ -263,6 +280,47 @@ function count_by(values, func)
   end)
 
   return result
+end
+
+function shuffle(values)
+  local rand, index, shuffled = 0, 1, {}
+  each(values, function(value)
+    rand = math.random(1, index)
+    index = index + 1
+    shuffled[index - 1] = shuffled[rand]
+    shuffled[rand] = value
+  end)
+
+  return shuffled
+end
+
+function to_array(values)
+  if not values then return {} end
+  
+  local cloned = {}
+  each(values, function(value)
+    table.insert(cloned, value)
+  end)
+
+  return cloned
+end
+
+function size(values, ...)
+  local args = {...}
+
+  if is_array(values) then
+    return #values
+  elseif is_object(values) then
+    local length = 0
+    each(values, function() length = length + 1 end)
+    return length
+  elseif is_string(values) then
+    return string.len(values)
+  elseif not is_empty(args) then
+    return size(args) + 1
+  end
+
+  return 0
 end
 
 collect = map
