@@ -212,6 +212,46 @@ function sort_by(values, func)
   return values
 end
 
+function group_by(values, func)
+  local result = {}
+
+  if type(func) == "string" then
+    group_func = function(v)
+      return v[func](v)
+    end
+  else
+    group_func = func
+  end
+
+  each(values, function(value)
+    local key = group_func(value)
+    result[key] = result[key] or {}
+    table.insert(result[key], value)
+  end)
+
+  return result
+end
+
+function count_by(values, func)
+  local result = {}
+
+  if type(func) == "string" then
+    count_func = function(v)
+      return v[func](v)
+    end
+  else
+    count_func = func
+  end
+
+  each(values, function(value)
+    local key = count_func(value)
+    result[key] = result[key] or 0 
+    result[key] = result[key] + 1
+  end)
+
+  return result
+end
+
 -- private
 
 function reverse(values)

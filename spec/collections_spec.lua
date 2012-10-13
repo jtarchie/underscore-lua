@@ -287,9 +287,43 @@ describe("#sort_by", function()
 end)
 
 describe("#groupBy", function()
+  it("groups even and odd number together", function()
+    local list = {1,2,3,4,5,6,7,8}
+    local grouped = _.group_by(list, function(v) return v % 2 end)
+
+    assert.same(grouped[0], {2,4,6,8})
+    assert.same(grouped[1], {1,3,5,7})
+    assert.equals(#grouped, 1)
+  end)
+
+  it("groups by length of the string", function()
+    local list = {"one", "two", "three", "four", "five"}
+    local grouped = _.group_by(list, 'len')
+
+    assert.same(grouped[3], {'one', 'two'})
+    assert.same(grouped[4], {'four', 'five'})
+    assert.same(grouped[5], {'three'})
+  end)
 end)
 
 describe("#countBy", function()
+  it("counts even and odd number together", function()
+    local list = {1,2,3,4,5,6,7,8, 9}
+    local grouped = _.count_by(list, function(v) return v % 2 end)
+
+    assert.same(grouped[0], 4)
+    assert.same(grouped[1], 5)
+    assert.equals(#grouped, 1)
+  end)
+
+  it("counts by length of the string", function()
+    local list = {"one", "two", "three", "four", "five"}
+    local grouped = _.count_by(list, 'len')
+
+    assert.same(grouped[3], 2)
+    assert.same(grouped[4], 2)
+    assert.same(grouped[5], 1)
+  end)
 end)
 
 describe("#sortedIndex", function()
