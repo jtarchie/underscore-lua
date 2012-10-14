@@ -218,7 +218,7 @@ function invoke(values, func, ...)
   local invoke_func, args = func, {...}
   
   if is_string(func) then
-    invoke_func = function(value, ...)
+    invoke_func = function(value)
       return value[func](value, unpack(args))
     end
   end
@@ -321,6 +321,59 @@ function size(values, ...)
   end
 
   return 0
+end
+
+function memoize(func)
+  local values = {}
+
+  return function(...)
+    if not values[...] then
+       values[...] = func(...)
+    end
+
+    return values[...]
+  end
+end
+
+function once(func)
+  local called = false
+  return function(...)
+    if not called then
+      called = true
+      return func(...)
+    end
+  end
+end
+
+function after(times, func)
+  if times <= 0 then return func() end
+
+  return function(...)
+    times = times - 1
+    if times < 1 then
+      return func(...)
+    end
+  end
+end
+
+function wrap(func, wrapper)
+  return function(...)
+    wrapper(func, ...)
+  end
+end
+
+function compose(...)
+  local funcs = {...}
+
+  return function(...)
+    local args = {...}
+
+    each(reverse(funcs), function(func)
+      table.insert(args, func(unpack(args)))
+    end)
+
+    return args[0]
+  end
 end
 
 collect = map
