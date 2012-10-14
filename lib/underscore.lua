@@ -34,6 +34,18 @@ local is_array = function(values)
   return is_object(values) and values[1]
 end
 
+local slice = function(values, start, stop)
+  local index, array = 1, {}
+
+  each(values, function(v)
+    if start <= index and index <= stop then
+      table.insert(array, v)
+    end
+    index = index + 1
+  end)
+
+  return array
+end
 
 -- public 
 function each(values, func)
@@ -376,6 +388,197 @@ function compose(...)
   end
 end
 
+function range(...)
+  local args = {...}
+  local start, stop, step = unpack(args)
+  
+  if #args <= 1 then
+    stop = start or 0
+    start = 0
+  end
+  step = args[3] or 1
+
+  local length, index, array =
+    math.max(math.ceil((stop - start) / step), 0),
+    0, {}
+
+  while index < length do
+    table.insert(array, start)
+    index = index + 1
+    start = start + step
+  end
+  
+  return array
+end
+
+function first(values, count)
+  if not values then return nil end
+  count = count or 1
+
+  return slice(values, 1, count)
+end
+
+function rest(values, start)
+  start = start or 2
+
+  return slice(values, start, #values)
+end
+
+function initial(values, stop)
+  stop = stop or (#values - 1)
+
+  return slice(values, 1, stop)
+end
+
+function last(values, count)
+  if not values then return nil end
+  count = count or 1
+
+  local start, stop, array = #values - count + 1, #values, {}
+  return slice(values, start, stop)
+end
+
+function compact(values)
+  return filter(values, function(v)
+    return not not v
+  end)
+end
+
+function flatten(values, shallow, output)
+  output = output or {}
+
+  each(values, function(value)
+    if is_array(value) then
+      if shallow then
+        each(value, function(v) table.insert(output, v) end)
+      else
+        flatten(value, false, output)
+      end
+    else
+      table.insert(output, value)
+    end
+  end)
+
+  return output
+end
+
+function without(values, ...)
+  local args = {...}
+
+  return difference(values, args)
+end
+
+function uniq(values, sorted, iterator)
+  local initial, results, seen = values, {}, {}
+  if iterator then
+    initial = map(values, iterator)
+  end
+
+  each(initial, function(value, index)
+    if (sorted and (index==1 or seen[#seen]~=value)) or (not contains(seen, value)) then
+      table.insert(seen, value)
+      table.insert(results, values[index])
+    end
+  end)
+
+  return results
+end
+
+function index_of(values, value, start)
+  if not values then return 0 end
+  start = start or 1
+
+  for index = start, #values, 1 do
+    if value == values[index] then
+      return index
+    end
+  end
+
+  return 0
+end
+
+function intersection(a, ...)
+  local b = {...}
+  return filter(uniq(a), function(item)
+    return every(b, function(other)
+      return index_of(other, item) >= 1
+    end)
+  end)
+end
+
+function union(...)
+  return uniq(flatten({...}, true))
+end
+
+function difference(a, ...)
+  local b = flatten({...}, true)
+  return filter(a, function(value)
+    return not contains(b, value)
+  end)
+end
+
+function zip(...)
+  local args = {...}
+  local length = max(map(args, function(a) return #a end))
+  local results = {}
+
+  for i=1, length, 1 do
+    table.insert(results, pluck(args, i))
+  end
+
+  return results
+end
+
+function object(list, values)
+  if not list then return {} end
+  
+  local result = {}
+  each(list, function(value, index)
+    if values then
+      result[value] = values[index]
+    else
+      result[value[1]] = value[2]
+    end
+  end)
+
+  return result
+end
+
+function last_index_of(values, value, start)
+  if not values then return 0 end
+  start = start or #values
+
+  for index = start, 1, -1 do
+    if value == values[index] then
+      return index
+    end
+  end
+
+  return 0
+end
+
+function print_r (t, name, indent)
+  local tableList = {}
+  function table_r (t, name, indent, full)
+    local serial=string.len(full) == 0 and name
+        or type(name)~="number" and '["'..tostring(name)..'"]' or '['..name..']'
+    io.write(indent,serial,' = ') 
+    if type(t) == "table" then
+      if tableList[t] ~= nil then io.write('{}; -- ',tableList[t],' (self reference)\n')
+      else
+        tableList[t]=full..serial
+        if next(t) then -- Table not empty
+          io.write('{\n')
+          for key,value in pairs(t) do table_r(value,key,indent..'\t',full..serial) end 
+          io.write(indent,'};\n')
+        else io.write('{};\n') end
+      end
+    else io.write(type(t)~="number" and type(t)~="boolean" and '"'..tostring(t)..'"'
+                  or tostring(t),';\n') end
+  end
+  table_r(t,name or '__unnamed__',indent or '','')
+end
+
 collect = map
 inject = reduce
 foldl = reduce
@@ -385,3 +588,7 @@ filter = select
 every = all
 same = any
 contains = include
+head = first
+take = first
+drop = rest
+tail = rest
