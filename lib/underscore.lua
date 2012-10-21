@@ -1,7 +1,5 @@
 local table, ipairs, pairs, math, string = table, ipairs, pairs, math, string
 
---module(..., package.seeall)
-
 local _ = {}
 
 -- private
@@ -118,7 +116,7 @@ function _.reject(list, func)
 end
 
 function _.all(list, func)
-  if _.is_empty(list) then return false end
+  if _.isEmpty(list) then return false end
 
   func = func or identity
 
@@ -133,7 +131,7 @@ function _.all(list, func)
 end
 
 function _.any(list, func)
-  if _.is_empty(list) then return false end
+  if _.isEmpty(list) then return false end
 
   func = func or identity
 
@@ -172,9 +170,9 @@ function _.where(list, properties)
 end
 
 function _.max(list, func)
-  if _.is_empty(list) then
+  if _.isEmpty(list) then
     return -math.huge
-  elseif _.is_function(func) then
+  elseif _.isFunction(func) then
     local max = {computed=-math.huge}
     _.each(list, function(value)
       local computed = func(value)
@@ -189,9 +187,9 @@ function _.max(list, func)
 end
 
 function _.min(list, func)
-  if _.is_empty(list) then
+  if _.isEmpty(list) then
     return math.huge
-  elseif _.is_function(func) then
+  elseif _.isFunction(func) then
     local min = {computed=math.huge}
     _.each(list, function(value)
       local computed = func(value)
@@ -208,7 +206,7 @@ end
 function _.invoke(list, func, ...)
   local invoke_func, args = func, {...}
   
-  if _.is_string(func) then
+  if _.isString(func) then
     invoke_func = function(value)
       return value[func](value, unpack(args))
     end
@@ -219,7 +217,7 @@ function _.invoke(list, func, ...)
   end)
 end
 
-function _.sort_by(list, func)
+function _.sortBy(list, func)
   func = func or identity
   local sorted_func = function(a,b)
     if a == nil then return false end
@@ -227,7 +225,7 @@ function _.sort_by(list, func)
     return func(a) < func(b)
   end
 
-  if _.is_string(func) then
+  if _.isString(func) then
     sorted_func = function(a,b)
       return a[func](a) < b[func](b)
     end
@@ -237,10 +235,10 @@ function _.sort_by(list, func)
   return list
 end
 
-function _.group_by(list, func)
+function _.groupBy(list, func)
   local group_func, result = func, {}
 
-  if _.is_string(func) then
+  if _.isString(func) then
     group_func = function(v)
       return v[func](v)
     end
@@ -255,10 +253,10 @@ function _.group_by(list, func)
   return result
 end
 
-function _.count_by(list, func)
+function _.countBy(list, func)
   local count_func, result = func, {}
 
-  if _.is_string(func) then
+  if _.isString(func) then
     count_func = function(v)
       return v[func](v)
     end
@@ -299,15 +297,15 @@ end
 function _.size(list, ...)
   local args = {...}
 
-  if _.is_array(list) then
+  if _.isArray(list) then
     return #list
-  elseif _.is_object(list) then
+  elseif _.isObject(list) then
     local length = 0
     _.each(list, function() length = length + 1 end)
     return length
-  elseif _.is_string(list) then
+  elseif _.isString(list) then
     return string.len(list)
-  elseif not _.is_empty(args) then
+  elseif not _.isEmpty(args) then
     return _.size(args) + 1
   end
 
@@ -430,7 +428,7 @@ function _.flatten(list, shallow, output)
   output = output or {}
 
   _.each(list, function(value)
-    if _.is_array(value) then
+    if _.isArray(value) then
       if shallow then
         _.each(value, function(v) table.insert(output, v) end)
       else
@@ -466,7 +464,7 @@ function _.uniq(list, sorted, iterator)
   return results
 end
 
-function _.index_of(list, value, start)
+function _.indexOf(list, value, start)
   if not list then return 0 end
   start = start or 1
 
@@ -483,7 +481,7 @@ function _.intersection(a, ...)
   local b = {...}
   return _.filter(_.uniq(a), function(item)
     return _.every(b, function(other)
-      return _.index_of(other, item) >= 1
+      return _.indexOf(other, item) >= 1
     end)
   end)
 end
@@ -526,7 +524,7 @@ function _.object(list, values)
   return result
 end
 
-function _.last_index_of(list, value, start)
+function _.lastIndexOf(list, value, start)
   if not list then return 0 end
   start = start or #list
 
@@ -540,14 +538,14 @@ function _.last_index_of(list, value, start)
 end
 
 function _.keys(list)
-  if not _.is_object(list) then error("Not an object") end
+  if not _.isObject(list) then error("Not an object") end
   return _.map(list, function(_, key)
     return key
   end)
 end
 
 function _.values(list)
-  if _.is_array(list) then return list end
+  if _.isArray(list) then return list end
   return _.map(list, function(value)
     return value
   end)
@@ -573,7 +571,7 @@ function _.functions(list)
   local method_names = {}
 
   _.each(list, function(value, key)
-    if _.is_function(value) then
+    if _.isFunction(value) then
       table.insert(method_names, key)
     end
   end)
@@ -633,60 +631,60 @@ function _.defaults(list, ...)
 end
 
 function _.clone(list)
-  if not _.is_object(list) then return list end
+  if not _.isObject(list) then return list end
 
-  if _.is_array(list) then
+  if _.isArray(list) then
     return slice(list, 1, #list) 
   else
     return _.extend({}, list)
   end
 end
 
-function _.is_nan(value)
-  return _.is_number(value) and value ~= value 
+function _.isNaN(value)
+  return _.isNumber(value) and value ~= value 
 end
 
-function _.is_empty(value)
+function _.isEmpty(value)
   if not value then
     return true
-  elseif _.is_array(value) or _.is_object(value) then
+  elseif _.isArray(value) or _.isObject(value) then
     return next(value) == nil
-  elseif _.is_string(value) then
+  elseif _.isString(value) then
     return string.len(value) == 0
   else
     return false
   end
 end
 
-function _.is_object(value)
+function _.isObject(value)
   return type(value) == "function" or type(value) == "table"
 end
 
-function _.is_array(value)
-  return _.is_object(value) and value[1]
+function _.isArray(value)
+  return _.isObject(value) and value[1]
 end
 
-function _.is_string(value)
+function _.isString(value)
   return type(value) == "string"
 end
 
-function _.is_number(value)
+function _.isNumber(value)
   return type(value) == "number"
 end
 
-function _.is_function(value)
+function _.isFunction(value)
   return type(value) == "function"
 end
 
-function _.is_finite(value)
-  return _.is_number(value) and -math.huge < value and value < math.huge
+function _.isFinite(value)
+  return _.isNumber(value) and -math.huge < value and value < math.huge
 end
 
-function _.is_boolean(value)
+function _.isBoolean(value)
   return type(value) == "boolean"
 end
 
-function _.is_nil(value)
+function _.isNil(value)
   return value == nil
 end
 
@@ -696,7 +694,7 @@ function _.tap(value, func)
 end
 
 function _.split(value)
-  if _.is_string(value) then
+  if _.isString(value) then
     local values = {}
     string.gsub(value, "[^%s+]", function(c)
       table.insert(values, c)

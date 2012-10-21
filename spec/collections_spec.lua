@@ -272,21 +272,21 @@ describe("#invoke", function()
   end)
 end)
 
-describe("#sort_by", function()
+describe("#sortBy", function()
   it("sorts by object properties", function()
     local people = {{name='curly', age=50}, {name='moe', age=30}}
-    people = _.sort_by(people, function(person) return person.age end)
+    people = _.sortBy(people, function(person) return person.age end)
     assert.same(_.pluck(people, 'name'), {'moe', 'curly'})
   end)
 
   it("sorts by value by default", function()
     local list = {4, 1, 3, 2}
-    assert.same(_.sort_by(list), {1,2,3,4});
+    assert.same(_.sortBy(list), {1,2,3,4});
   end)
 
   it("sorts by function name reference", function()
     local list = {"one", "two", "three", "four", "five"}
-    local sorted = _.sort_by(list, 'len')
+    local sorted = _.sortBy(list, 'len')
     assert.same(sorted, {'one','two','four','five','three'}) 
   end)
 end)
@@ -294,7 +294,7 @@ end)
 describe("#groupBy", function()
   it("groups even and odd number together", function()
     local list = {1,2,3,4,5,6,7,8}
-    local grouped = _.group_by(list, function(v) return v % 2 end)
+    local grouped = _.groupBy(list, function(v) return v % 2 end)
 
     assert.same(grouped[0], {2,4,6,8})
     assert.same(grouped[1], {1,3,5,7})
@@ -303,7 +303,7 @@ describe("#groupBy", function()
 
   it("groups by length of the string", function()
     local list = {"one", "two", "three", "four", "five"}
-    local grouped = _.group_by(list, 'len')
+    local grouped = _.groupBy(list, 'len')
 
     assert.same(grouped[3], {'one', 'two'})
     assert.same(grouped[4], {'four', 'five'})
@@ -314,7 +314,7 @@ end)
 describe("#countBy", function()
   it("counts even and odd number together", function()
     local list = {1,2,3,4,5,6,7,8, 9}
-    local grouped = _.count_by(list, function(v) return v % 2 end)
+    local grouped = _.countBy(list, function(v) return v % 2 end)
 
     assert.same(grouped[0], 4)
     assert.same(grouped[1], 5)
@@ -323,7 +323,7 @@ describe("#countBy", function()
 
   it("counts by length of the string", function()
     local list = {"one", "two", "three", "four", "five"}
-    local grouped = _.count_by(list, 'len')
+    local grouped = _.countBy(list, 'len')
 
     assert.same(grouped[3], 2)
     assert.same(grouped[4], 2)

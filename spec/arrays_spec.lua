@@ -173,37 +173,37 @@ describe("#object", function()
   end)
 end)
 
-describe("#index_of", function()
+describe("#indexOf", function()
   it("can compute index of a value", function()
     local list = {1,2,3}
-    assert.same(_.index_of(list, 2), 2)
-    assert.same(_.index_of(list, 5), 0)
+    assert.same(_.indexOf(list, 2), 2)
+    assert.same(_.indexOf(list, 5), 0)
   end)
 
   it("support starting from an index", function()
     local list = {1, 2, 3, 1, 2, 3, 1, 2, 3}
-    assert.same(_.index_of(list, 2, 6), 8)
+    assert.same(_.indexOf(list, 2, 6), 8)
   end)
   
   it("handles nil properly", function()
-    assert.equal(_.index_of(nil, 0), 0)
+    assert.equal(_.indexOf(nil, 0), 0)
   end)
 end)
 
-describe("#last_index_of", function()
+describe("#lastIndexOf", function()
   local numbers = {1, 0, 1, 0, 0, 1, 0, 0, 0}
 
   it("returns the last index from the right the element appears", function()
-    assert.equal(_.last_index_of(numbers, 1), 6)
-    assert.equal(_.last_index_of(numbers, 0), 9)
+    assert.equal(_.lastIndexOf(numbers, 1), 6)
+    assert.equal(_.lastIndexOf(numbers, 0), 9)
   end)
 
   it("supports starting from an index", function()
-    assert.equal(_.last_index_of(numbers, 10), 0)
+    assert.equal(_.lastIndexOf(numbers, 10), 0)
   end)
 
   it("handles nil properly", function()
-    assert.equal(_.last_index_of(nil, 0), 0)
+    assert.equal(_.lastIndexOf(nil, 0), 0)
   end)
 end)
 
