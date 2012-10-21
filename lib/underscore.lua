@@ -695,6 +695,19 @@ function _.tap(value, func)
   return value
 end
 
+function _.split(value)
+  if _.is_string(value) then
+    local values = {}
+    string.gsub(value, "[^%s+]", function(c)
+      table.insert(values, c)
+    end)
+
+    return values
+  else
+    return {}
+  end
+end
+
 function _.print_r (t, name, indent)
   local tableList = {}
   function table_r (t, name, indent, full)

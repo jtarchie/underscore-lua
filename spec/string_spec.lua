@@ -1,0 +1,17 @@
+local _ = require("lib/underscore")
+
+describe("string functions", function()
+  describe("#split", function()
+    it("splits a string on each character", function()
+      assert.same(_.split("asdf"),{"a","s","d","f"})
+      assert.same(_.split(""),{})
+    end)
+
+    it("returns an empty array with non-string values", function()
+      assert.same(_.split({}),{})
+      assert.same(_.split(nil),{})
+      assert.same(_.split(123),{})
+      assert.same(_.split(function() end),{})
+    end)
+  end)
+end)
