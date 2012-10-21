@@ -1,74 +1,53 @@
 local table, ipairs, pairs, math, string = table, ipairs, pairs, math, string
 
-module(..., package.seeall)
+--module(..., package.seeall)
+
+local _ = {}
 
 -- private
 local identity = function(value) return value end
 
-local reverse = function(values)
+local reverse = function(list)
   local reversed = {}
-  each(values, function(value, index)
+  _.each(list, function(value, index)
     table.insert(reversed, 1, value)
   end)
 
   return reversed
 end
 
-local is_empty = function(values)
-  return next(values) == nil
-end
+local slice = function(list, start, stop)
+  local array = {}
 
-local is_object = function(values)
-  return type(values) == "table"
-end
-
-local is_string = function(value)
-  return type(value) == "string" 
-end
-
-local is_function = function(value)
-  return type(value) == "function"
-end
-
-local is_array = function(values)
-  return is_object(values) and values[1]
-end
-
-local slice = function(values, start, stop)
-  local index, array = 1, {}
-
-  each(values, function(v)
-    if start <= index and index <= stop then
-      table.insert(array, v)
-    end
-    index = index + 1
-  end)
+  for index = start, stop, 1 do
+    table.insert(array, list[index])
+  end
 
   return array
 end
 
 -- public 
-function each(values, func)
+function _.each(list, func)
   local pairing = pairs
-  if values[1] then pairing = ipairs end
+  if list[1] then pairing = ipairs end
 
-  for index, value in pairing(values) do
-    func(value, index, values)
+  for index, value in pairing(list) do
+    func(value, index, list)
   end
 end
 
-function map(values, func)
-  local new_values = {}
-  each(values, function(value)
-    table.insert(new_values, func(value))
+function _.map(list, func)
+  local new_list = {}
+  _.each(list, function(value, key, original_list)
+    table.insert(new_list, func(value, key, original_list))
   end)
 
-  return new_values
+  return new_list
 end
 
-function reduce(values, func, memo)
+function _.reduce(list, func, memo)
   local init = memo == nil
-  each(values, function(value)
+  _.each(list, function(value)
     if init then
       memo = value
       init = false
@@ -84,9 +63,9 @@ function reduce(values, func, memo)
   return memo
 end
 
-function reduceRight(values, func, memo)
+function _.reduceRight(list, func, memo)
   local init = memo == nil
-  each(reverse(values), function(value)
+  _.each(reverse(list), function(value)
     if init then
       memo = value
       init = false
@@ -102,11 +81,11 @@ function reduceRight(values, func, memo)
   return memo
 end
 
-function find(values, func)
+function _.find(list, func)
   if func == nil then return nil end
 
   local result = nil
-  any(values, function(value)
+  _.any(list, function(value)
     if func(value) then
       result = value
       return true
@@ -116,9 +95,9 @@ function find(values, func)
   return result 
 end
 
-function select(values, func)
+function _.select(list, func)
   local found = {}
-  each(values, function(value)
+  _.each(list, function(value)
     if func(value) then
       table.insert(found, value)
     end
@@ -127,9 +106,9 @@ function select(values, func)
   return found
 end
 
-function reject(values, func)
+function _.reject(list, func)
   local found = {}
-  each(values, function(value)
+  _.each(list, function(value)
     if not func(value) then
       table.insert(found, value)
     end
@@ -138,13 +117,13 @@ function reject(values, func)
   return found
 end
 
-function all(values, func)
-  if is_empty(values) then return false end
+function _.all(list, func)
+  if _.is_empty(list) then return false end
 
   func = func or identity
 
   local found = true
-  each(values, function(value, index)
+  _.each(list, function(value, index)
     if found and not func(value, index) then
       found = false
     end
@@ -153,13 +132,13 @@ function all(values, func)
   return found
 end
 
-function any(values, func)
-  if is_empty(values) then return false end
+function _.any(list, func)
+  if _.is_empty(list) then return false end
 
   func = func or identity
 
   local found = false
-  each(values, function(value, index)
+  _.each(list, function(value, index)
     if not found and func(value, index) then
       found = true
     end
@@ -168,36 +147,36 @@ function any(values, func)
   return found
 end
 
-function include(values, v)
-  return any(values, function(value)
+function _.include(list, v)
+  return _.any(list, function(value)
     return v == value
   end)
 end
 
-function pluck(values, key)
+function _.pluck(list, key)
   local found = {}
-  each(values, function(value)
+  _.each(list, function(value)
     table.insert(found, value[key])
   end)
 
   return found
 end
 
-function where(values, properties)
+function _.where(list, properties)
   local found = {}
-  return select(values, function(value)
-    return all(properties, function(v, k)
+  return _.select(list, function(value)
+    return _.all(properties, function(v, k)
       return value[k] == v
     end)
   end)
 end
 
-function max(values, func)
-  if is_empty(values) then
+function _.max(list, func)
+  if _.is_empty(list) then
     return -math.huge
-  elseif is_function(func) then
+  elseif _.is_function(func) then
     local max = {computed=-math.huge}
-    each(values, function(value)
+    _.each(list, function(value)
       local computed = func(value)
       if computed >= max.computed then
         max = {computed=computed, value=value}
@@ -205,16 +184,16 @@ function max(values, func)
     end)
     return max.value
   else
-    return math.max(unpack(values))
+    return math.max(unpack(list))
   end
 end
 
-function min(values, func)
-  if is_empty(values) then
+function _.min(list, func)
+  if _.is_empty(list) then
     return math.huge
-  elseif is_function(func) then
+  elseif _.is_function(func) then
     local min = {computed=math.huge}
-    each(values, function(value)
+    _.each(list, function(value)
       local computed = func(value)
       if computed < min.computed then
         min = {computed=computed, value=value}
@@ -222,25 +201,25 @@ function min(values, func)
     end)
     return min.value
   else
-    return math.min(unpack(values))
+    return math.min(unpack(list))
   end
 end
 
-function invoke(values, func, ...)
+function _.invoke(list, func, ...)
   local invoke_func, args = func, {...}
   
-  if is_string(func) then
+  if _.is_string(func) then
     invoke_func = function(value)
       return value[func](value, unpack(args))
     end
   end
 
-  return collect(values, function(value)
+  return _.collect(list, function(value)
     return invoke_func(value, unpack(args))
   end)
 end
 
-function sort_by(values, func)
+function _.sort_by(list, func)
   func = func or identity
   local sorted_func = function(a,b)
     if a == nil then return false end
@@ -248,26 +227,26 @@ function sort_by(values, func)
     return func(a) < func(b)
   end
 
-  if is_string(func) then
+  if _.is_string(func) then
     sorted_func = function(a,b)
       return a[func](a) < b[func](b)
     end
   end
 
-  table.sort(values, sorted_func)
-  return values
+  table.sort(list, sorted_func)
+  return list
 end
 
-function group_by(values, func)
+function _.group_by(list, func)
   local group_func, result = func, {}
 
-  if is_string(func) then
+  if _.is_string(func) then
     group_func = function(v)
       return v[func](v)
     end
   end
 
-  each(values, function(value)
+  _.each(list, function(value)
     local key = group_func(value)
     result[key] = result[key] or {}
     table.insert(result[key], value)
@@ -276,16 +255,16 @@ function group_by(values, func)
   return result
 end
 
-function count_by(values, func)
+function _.count_by(list, func)
   local count_func, result = func, {}
 
-  if is_string(func) then
+  if _.is_string(func) then
     count_func = function(v)
       return v[func](v)
     end
   end
 
-  each(values, function(value)
+  _.each(list, function(value)
     local key = count_func(value)
     result[key] = result[key] or 0 
     result[key] = result[key] + 1
@@ -294,9 +273,9 @@ function count_by(values, func)
   return result
 end
 
-function shuffle(values)
+function _.shuffle(list)
   local rand, index, shuffled = 0, 1, {}
-  each(values, function(value)
+  _.each(list, function(value)
     rand = math.random(1, index)
     index = index + 1
     shuffled[index - 1] = shuffled[rand]
@@ -306,48 +285,48 @@ function shuffle(values)
   return shuffled
 end
 
-function to_array(values)
-  if not values then return {} end
+function _.to_array(list)
+  if not list then return {} end
   
   local cloned = {}
-  each(values, function(value)
+  _.each(list, function(value)
     table.insert(cloned, value)
   end)
 
   return cloned
 end
 
-function size(values, ...)
+function _.size(list, ...)
   local args = {...}
 
-  if is_array(values) then
-    return #values
-  elseif is_object(values) then
+  if _.is_array(list) then
+    return #list
+  elseif _.is_object(list) then
     local length = 0
-    each(values, function() length = length + 1 end)
+    _.each(list, function() length = length + 1 end)
     return length
-  elseif is_string(values) then
-    return string.len(values)
-  elseif not is_empty(args) then
-    return size(args) + 1
+  elseif _.is_string(list) then
+    return string.len(list)
+  elseif not _.is_empty(args) then
+    return _.size(args) + 1
   end
 
   return 0
 end
 
-function memoize(func)
-  local values = {}
+function _.memoize(func)
+  local list = {}
 
   return function(...)
-    if not values[...] then
-       values[...] = func(...)
+    if not list[...] then
+       list[...] = func(...)
     end
 
-    return values[...]
+    return list[...]
   end
 end
 
-function once(func)
+function _.once(func)
   local called = false
   return function(...)
     if not called then
@@ -357,7 +336,7 @@ function once(func)
   end
 end
 
-function after(times, func)
+function _.after(times, func)
   if times <= 0 then return func() end
 
   return function(...)
@@ -368,19 +347,19 @@ function after(times, func)
   end
 end
 
-function wrap(func, wrapper)
+function _.wrap(func, wrapper)
   return function(...)
     wrapper(func, ...)
   end
 end
 
-function compose(...)
+function _.compose(...)
   local funcs = {...}
 
   return function(...)
     local args = {...}
 
-    each(reverse(funcs), function(func)
+    _.each(reverse(funcs), function(func)
       table.insert(args, func(unpack(args)))
     end)
 
@@ -388,7 +367,7 @@ function compose(...)
   end
 end
 
-function range(...)
+function _.range(...)
   local args = {...}
   local start, stop, step = unpack(args)
   
@@ -411,48 +390,51 @@ function range(...)
   return array
 end
 
-function first(values, count)
-  if not values then return nil end
+function _.first(list, count)
+  if not list then return nil end
   count = count or 1
 
-  return slice(values, 1, count)
+  return slice(list, 1, count)
 end
 
-function rest(values, start)
+function _.rest(list, start)
   start = start or 2
 
-  return slice(values, start, #values)
+  return slice(list, start, #list)
 end
 
-function initial(values, stop)
-  stop = stop or (#values - 1)
+function _.initial(list, stop)
+  stop = stop or (#list - 1)
 
-  return slice(values, 1, stop)
+  return slice(list, 1, stop)
 end
 
-function last(values, count)
-  if not values then return nil end
-  count = count or 1
+function _.last(list, count)
+  if not list then return nil end
 
-  local start, stop, array = #values - count + 1, #values, {}
-  return slice(values, start, stop)
+  if not count then
+    return list[#list]
+  else
+    local start, stop, array = #list - count + 1, #list, {}
+    return slice(list, start, stop)
+  end
 end
 
-function compact(values)
-  return filter(values, function(v)
+function _.compact(list)
+  return _.filter(list, function(v)
     return not not v
   end)
 end
 
-function flatten(values, shallow, output)
+function _.flatten(list, shallow, output)
   output = output or {}
 
-  each(values, function(value)
-    if is_array(value) then
+  _.each(list, function(value)
+    if _.is_array(value) then
       if shallow then
-        each(value, function(v) table.insert(output, v) end)
+        _.each(value, function(v) table.insert(output, v) end)
       else
-        flatten(value, false, output)
+        _.flatten(value, false, output)
       end
     else
       table.insert(output, value)
@@ -462,34 +444,34 @@ function flatten(values, shallow, output)
   return output
 end
 
-function without(values, ...)
+function _.without(list, ...)
   local args = {...}
 
-  return difference(values, args)
+  return _.difference(list, args)
 end
 
-function uniq(values, sorted, iterator)
-  local initial, results, seen = values, {}, {}
+function _.uniq(list, sorted, iterator)
+  local initial, results, seen = list, {}, {}
   if iterator then
-    initial = map(values, iterator)
+    initial = _.map(list, iterator)
   end
 
-  each(initial, function(value, index)
-    if (sorted and (index==1 or seen[#seen]~=value)) or (not contains(seen, value)) then
+  _.each(initial, function(value, index)
+    if (sorted and (index==1 or seen[#seen]~=value)) or (not _.contains(seen, value)) then
       table.insert(seen, value)
-      table.insert(results, values[index])
+      table.insert(results, list[index])
     end
   end)
 
   return results
 end
 
-function index_of(values, value, start)
-  if not values then return 0 end
+function _.index_of(list, value, start)
+  if not list then return 0 end
   start = start or 1
 
-  for index = start, #values, 1 do
-    if value == values[index] then
+  for index = start, #list, 1 do
+    if value == list[index] then
       return index
     end
   end
@@ -497,43 +479,43 @@ function index_of(values, value, start)
   return 0
 end
 
-function intersection(a, ...)
+function _.intersection(a, ...)
   local b = {...}
-  return filter(uniq(a), function(item)
-    return every(b, function(other)
-      return index_of(other, item) >= 1
+  return _.filter(_.uniq(a), function(item)
+    return _.every(b, function(other)
+      return _.index_of(other, item) >= 1
     end)
   end)
 end
 
-function union(...)
-  return uniq(flatten({...}, true))
+function _.union(...)
+  return _.uniq(_.flatten({...}, true))
 end
 
-function difference(a, ...)
-  local b = flatten({...}, true)
-  return filter(a, function(value)
-    return not contains(b, value)
+function _.difference(a, ...)
+  local b = _.flatten({...}, true)
+  return _.filter(a, function(value)
+    return not _.contains(b, value)
   end)
 end
 
-function zip(...)
+function _.zip(...)
   local args = {...}
-  local length = max(map(args, function(a) return #a end))
+  local length = _.max(_.map(args, function(a) return #a end))
   local results = {}
 
   for i=1, length, 1 do
-    table.insert(results, pluck(args, i))
+    table.insert(results, _.pluck(args, i))
   end
 
   return results
 end
 
-function object(list, values)
+function _.object(list, values)
   if not list then return {} end
   
   local result = {}
-  each(list, function(value, index)
+  _.each(list, function(value, index)
     if values then
       result[value] = values[index]
     else
@@ -544,12 +526,12 @@ function object(list, values)
   return result
 end
 
-function last_index_of(values, value, start)
-  if not values then return 0 end
-  start = start or #values
+function _.last_index_of(list, value, start)
+  if not list then return 0 end
+  start = start or #list
 
   for index = start, 1, -1 do
-    if value == values[index] then
+    if value == list[index] then
       return index
     end
   end
@@ -557,7 +539,163 @@ function last_index_of(values, value, start)
   return 0
 end
 
-function print_r (t, name, indent)
+function _.keys(list)
+  if not _.is_object(list) then error("Not an object") end
+  return _.map(list, function(_, key)
+    return key
+  end)
+end
+
+function _.values(list)
+  if _.is_array(list) then return list end
+  return _.map(list, function(value)
+    return value
+  end)
+end
+
+function _.pairs(list)
+  return _.map(list, function(value, key)
+    return {key, value}
+  end)
+end
+
+function _.invert(list)
+  local array = {}
+
+  _.each(list, function(value, key)
+    array[value] = key
+  end)
+
+  return array
+end
+
+function _.functions(list)
+  local method_names = {}
+
+  _.each(list, function(value, key)
+    if _.is_function(value) then
+      table.insert(method_names, key)
+    end
+  end)
+
+  return method_names
+end
+
+function _.extend(list, ...)
+  local lists = {...}
+  _.each(lists, function(source)
+    _.each(source, function(value, key)
+      list[key] = source[key]
+    end)
+  end)
+
+  return list
+end
+
+function _.pick(list, ...)
+  local keys = _.flatten({...})
+
+  local array = {}
+  _.each(keys, function(key)
+    if list[key] then
+      array[key] = list[key]
+    end
+  end)
+
+  return array
+end
+
+function _.omit(list, ...)
+  local keys = _.flatten({...})
+
+  local array = {}
+  _.each(list, function(value,key)
+    if not _.contains(keys, key) then
+      array[key] = list[key]
+    end
+  end)
+
+  return array
+end
+
+function _.defaults(list, ...)
+  local keys = {...}
+
+  _.each(keys, function(source)
+    _.each(source, function(value, key)
+      if not list[key] then
+        list[key] = value
+      end
+    end)
+  end)
+
+  return list
+end
+
+function _.clone(list)
+  if not _.is_object(list) then return list end
+
+  if _.is_array(list) then
+    return slice(list, 1, #list) 
+  else
+    return _.extend({}, list)
+  end
+end
+
+function _.is_nan(value)
+  return _.is_number(value) and value ~= value 
+end
+
+function _.is_empty(value)
+  if not value then
+    return true
+  elseif _.is_array(value) or _.is_object(value) then
+    return next(value) == nil
+  elseif _.is_string(value) then
+    return string.len(value) == 0
+  else
+    return false
+  end
+end
+
+function _.is_object(value)
+  return type(value) == "function" or type(value) == "table"
+end
+
+function _.is_array(value)
+  return _.is_object(value) and value[1]
+end
+
+function _.is_string(value)
+  return type(value) == "string"
+end
+
+function _.is_number(value)
+  return type(value) == "number"
+end
+
+function _.is_function(value)
+  return type(value) == "function"
+end
+
+function _.is_finite(value)
+  return _.is_number(value) and -math.huge < value and value < math.huge
+end
+
+function _.is_boolean(value)
+  return type(value) == "boolean"
+end
+
+function _.is_nil(value)
+  return value == nil
+end
+
+function _.tap(value, func)
+  func(value)
+  return value
+end
+
+function _.print_r (t, name, indent)
   local tableList = {}
   function table_r (t, name, indent, full)
     local serial=string.len(full) == 0 and name
@@ -579,16 +717,18 @@ function print_r (t, name, indent)
   table_r(t,name or '__unnamed__',indent or '','')
 end
 
-collect = map
-inject = reduce
-foldl = reduce
-foldr = reduceRight
-detect = find
-filter = select
-every = all
-same = any
-contains = include
-head = first
-take = first
-drop = rest
-tail = rest
+_.collect = _.map
+_.inject = _.reduce
+_.foldl = _.reduce
+_.foldr = _.reduceRight
+_.detect = _.find
+_.filter = _.select
+_.every = _.all
+_.same = _.any
+_.contains = _.include
+_.head = _.first
+_.take = _.first
+_.drop = _.rest
+_.tail = _.rest
+
+return _

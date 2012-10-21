@@ -188,6 +188,11 @@ describe("#include", function()
     assert.is_not.truthy(_.include({one=1,four=4,three=3}, 2))
   end)
 
+  it("return true when values are string", function()
+    local value = {}
+    assert.truthy(_.include({"function","table"}, type(value)))
+  end)
+
   it("aliased to #contains", function()
     assert.truthy(_.contains({1,2,3}, 2))
   end)

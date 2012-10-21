@@ -46,7 +46,7 @@ describe("#last", function()
   local numbers = {1,2,3}
 
   it("can take an index to #last", function()
-    assert.same(_.last(numbers), {3})
+    assert.same(_.last(numbers), 3)
     assert.same(_.last(numbers, 0), {})
     assert.same(_.last(numbers, 2), {2,3})
     assert.same(_.last(numbers, 5), {1,2,3})
