@@ -706,6 +706,10 @@ function _.split(value)
   end
 end
 
+function _.chain(value)
+  return _(value).chain()
+end
+
 function _.print_r (t, name, indent)
   local tableList = {}
   function table_r (t, name, indent, full)
@@ -741,5 +745,31 @@ _.head = _.first
 _.take = _.first
 _.drop = _.rest
 _.tail = _.rest
+
+local chainable_mt = {
+  __index = function(target, name)
+    if _[name] then
+      target[name] = function(...)
+
+        target._wrapped = _[name](target._wrapped, ...)
+        return target
+      end
+      return target[name]
+    end
+
+    return nil
+  end
+}
+
+setmetatable(_,{
+  __call = function(target, ...)
+    wrapped = {...}
+    local instance = setmetatable({}, chainable_mt)
+    instance.chain = function() return instance end
+    instance.value = function() return instance._wrapped end
+    instance._wrapped = ... 
+    return instance
+  end
+})
 
 return _
