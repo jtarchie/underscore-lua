@@ -347,7 +347,7 @@ end
 
 function _.wrap(func, wrapper)
   return function(...)
-    wrapper(func, ...)
+    return wrapper(func, ...)
   end
 end
 
@@ -358,10 +358,10 @@ function _.compose(...)
     local args = {...}
 
     _.each(reverse(funcs), function(func)
-      table.insert(args, func(unpack(args)))
+      args = {func(unpack(args))}
     end)
 
-    return args[0]
+    return args[1]
   end
 end
 

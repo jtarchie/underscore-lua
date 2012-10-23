@@ -138,7 +138,7 @@ describe("#difference", function()
   end)
 
   it("takes the difference of three arrays", function()
-    assert.same(_.difference({1, 2, 3, 4}, {2, 30, 40}, {1, 11, 111}))
+    assert.same(_.difference({1, 2, 3, 4}, {2, 30, 40}, {1, 11, 111}), {3, 4})
   end)
 end)
 

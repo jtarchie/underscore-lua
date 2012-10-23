@@ -84,6 +84,6 @@ describe("#compose", function()
   it("compes multiple functions", function()
     local quoted = function(sentence) return "'" .. sentence .. "'" end
     local composed = _.compose(quoted, exclaim, greet)
-    assert.equal(composed("moe"), "'hi: moe!''")
+    assert.equal(composed("moe"), "'hi: moe!'")
   end)
 end)

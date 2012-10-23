@@ -62,7 +62,7 @@ end)
 
 describe("#extend", function()
   it("can extend an object with attributes of another", function()
-    assert.same(_.extend({},{b=1}, {b=1}))
+    assert.same(_.extend({},{b=1}), {b=1})
   end)
 
   it("properties in source override destination", function()
