@@ -331,7 +331,21 @@ describe("#countBy", function()
   end)
 end)
 
-describe("#sortedIndex", function()
+describe("#reverse", function()
+  it("reverses a string", function()
+    assert.equal(_.reverse("racecar"), "racecar")
+    assert.equal(_.reverse("walrus"), "surlaw")
+    assert.equal(_.reverse("12345"), "54321")
+  end)
+
+  it("reverses the elements in an array", function()
+    assert.same(_.reverse({1,2,3,4,5}),{5,4,3,2,1})
+  end)
+
+  it("modifies the original array", function()
+    local array = {1,2,3,4,5}
+    assert.equals(tostring(_.reverse(array)), tostring(array))
+  end)
 end)
 
 describe("#shuffle", function()
@@ -345,10 +359,10 @@ describe("#shuffle", function()
   end)
 end)
 
-describe("#to_array", function()
+describe("#toArray", function()
   it("clones the array", function()
     local list = {1,2,3,4,5}
-    local cloned = _.to_array(list)
+    local cloned = _.toArray(list)
 
     assert.same(list, cloned)
     assert.is_not.equal(list, cloned)
@@ -356,7 +370,7 @@ describe("#to_array", function()
 
   it("flattens an object to an array", function()
     local list = {one=1,two=2,three=3}
-    local array = _.to_array(list)
+    local array = _.toArray(list)
 
     assert.is_not.equal(list, array)
     table.sort(array)

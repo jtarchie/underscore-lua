@@ -241,3 +241,124 @@ describe("#range", function()
     assert.same(_.range(0,-10, -1), {0,-1,-2,-3,-4,-5,-6,-7,-8,-9})
   end)
 end)
+
+describe("#pop", function()
+  it("return nil when there array is empty", function()
+    assert.same(_.pop({}), nil)
+  end)
+
+  it("removes and return the last element off the array", function()
+    assert.same(_.pop({1,2,3,4,5}), 5)
+    assert.same(_.pop({1,2,"a"}), "a")
+  end)
+end)
+
+describe("#push", function()
+  it("adds multiple values to an empty array", function()
+    local obj = {}
+    local result = _.push(obj,1,2,3,4)
+    assert.equal(tostring(obj), tostring(result))
+    assert.same(result,{1,2,3,4})
+  end)
+
+  it("adds values to the end of non-empty array", function()
+    local obj = {1,2}
+    local result = _.push(obj,"a", {"b"})
+    assert.equal(tostring(obj), tostring(result))
+    assert.same(result,{1,2,"a",{"b"}})
+  end)
+end)
+
+describe("#shift", function()
+  it("returns nil from an empty array", function()
+    assert.equals(_.shift({}), nil)
+  end)
+
+  it("removes and returns the first value of an array", function()
+    assert.equals(_.shift({1,2,3}), 1)
+    assert.equals(_.shift({"a","bc",3}), "a")
+  end)
+end)
+
+describe("#sort", function()
+  it("sorts a list by lexicalgraphically order", function()
+    assert.same(_.sort({3,2,1}), {1,2,3})
+    assert.same(_.sort({"z","a","j"}), {"a","j","z"})
+    assert.same(_.sort({1,2,80,10}),{1,10,2,80})
+  end)
+
+  it("can take a comparison function", function()
+    local reverse = function(a,b)
+      return tostring(a) > tostring(b)
+    end
+    assert.same(_.sort({1,2,80,10}, reverse),{80,2,10,1})
+  end)
+end)
+
+describe("#splice", function()
+
+end)
+
+describe("#unshift", function()
+  it("adds multiple values to an empty array", function()
+    local obj = {}
+    local result = _.unshift(obj,1,2,3,4)
+    assert.equal(tostring(obj), tostring(result))
+    assert.same(result,{1,2,3,4})
+  end)
+
+  it("adds values to the end of non-empty array", function()
+    local obj = {1,2}
+    local result = _.unshift(obj,"a", {"b"})
+    assert.equal(tostring(obj), tostring(result))
+    assert.same(result,{"a",{"b"},1,2})
+  end)
+end)
+
+describe("#concat", function()
+  local alpha, num1, num2, num3 = {"a","b","c"}, {1,2,3}, {4,5,6}, {7,8,9}
+
+  it("concats two arrays", function()
+    assert.same(_.concat(alpha, num1), {"a","b","c",1,2,3})
+  end)
+
+  it("concats three arrays", function()
+    assert.same(_.concat(num1, num2, num3), {1,2,3,4,5,6,7,8,9})
+  end)
+
+  it("does not change the original arrays", function()
+    assert.same(num1, {1,2,3})
+    assert.same(num3, {7,8,9})
+  end)
+
+  it("can handle non-array values", function()
+    assert.same(_.concat(alpha, 1, {2,{3}}), {"a","b","c",1,2,{3}})
+  end)
+end)
+
+describe("#join", function()
+  it("defaults to joining all values with no separator", function()
+    assert.same(_.join({"moe", 30, "curly", 20}), "moe30curly20")
+    assert.same(_.join({"a", "b", "c"}), "abc")
+  end)
+
+  it("allows the user to specify separator character", function()
+    assert.same(_.join({"moe", 30, "curly", 20}, "\t"), "moe\t30\tcurly\t20")
+    assert.same(_.join({"a", "b", "c"}, "..."), "a...b...c")
+  end)
+end)
+
+describe("#slice", function()
+  local array = {1,2,3,4,5,6}
+  it("returns a subset of an array", function()
+    assert.same(_.slice(array, 1,6), {1,2,3,4,5,6})
+    assert.same(_.slice(array, 2,5), {2,3,4,5})
+    assert.same(_.slice(array, 5,5), {5})
+  end)
+
+  it("returns a from the start pos to the end of the array", function()
+    assert.same(_.slice(array, 1), {1,2,3,4,5,6})
+    assert.same(_.slice(array, 2), {2,3,4,5,6})
+    assert.same(_.slice(array, 6), {6})
+  end)
+end)

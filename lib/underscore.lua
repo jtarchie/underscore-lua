@@ -1,21 +1,64 @@
 local table, ipairs, pairs, math, string = table, ipairs, pairs, math, string
 
 local _ = {}
+local chainable_mt = {}
 
--- private
-local identity = function(value) return value end
+_.identity = function(value) return value end
 
-local reverse = function(list)
-  local reversed = {}
-  _.each(list, function(value, index)
-    table.insert(reversed, 1, value)
-  end)
-
-  return reversed
+function _.reverse(list)
+  if _.isString(list) then
+    return _(list).chain():split():reverse():join():value()
+  else
+    local length = _.size(list)
+    for i = 1, length / 2, 1 do
+      list[i], list[length-i+1] = list[length-i+1], list[i]
+    end
+    return list
+  end
 end
 
-local slice = function(list, start, stop)
+function _.pop(list)
+  return table.remove(list, #list)
+end
+
+function _.push(list, ...)
+  local values = {...}
+  _.each(values, function(v)
+    table.insert(list, v)
+  end)
+  return list
+end
+
+function _.shift(list)
+  return table.remove(list, 1)
+end
+
+function _.unshift(list, ...)
+  local values = {...}
+  _.each(_.reverse(values), function(v)
+    table.insert(list, 1, v)
+  end)
+
+  return list
+end
+
+function _.sort(list, func)
+  func = func or function(a,b)
+    return tostring(a) < tostring(b)
+  end
+
+  table.sort(list, func)
+  return list
+end
+
+function _.join(list, separator)
+  separator = separator or ""
+  return table.concat(list,separator) 
+end
+
+function _.slice(list, start, stop)
   local array = {}
+  stop = stop or #list
 
   for index = start, stop, 1 do
     table.insert(array, list[index])
@@ -24,10 +67,20 @@ local slice = function(list, start, stop)
   return array
 end
 
--- public 
+function _.concat(list, ...)
+  local values = _.flatten({...}, true)
+  local cloned = _.clone(list)
+
+  _.each(values, function(v)
+    table.insert(cloned, v)
+  end)
+
+  return cloned
+end
+
 function _.each(list, func)
   local pairing = pairs
-  if list[1] then pairing = ipairs end
+  if _.isArray(list) then pairing = ipairs end
 
   for index, value in pairing(list) do
     func(value, index, list)
@@ -63,7 +116,7 @@ end
 
 function _.reduceRight(list, func, memo)
   local init = memo == nil
-  _.each(reverse(list), function(value)
+  _.each(_.reverse(list), function(value)
     if init then
       memo = value
       init = false
@@ -118,7 +171,7 @@ end
 function _.all(list, func)
   if _.isEmpty(list) then return false end
 
-  func = func or identity
+  func = func or _.identity
 
   local found = true
   _.each(list, function(value, index)
@@ -133,7 +186,7 @@ end
 function _.any(list, func)
   if _.isEmpty(list) then return false end
 
-  func = func or identity
+  func = func or _.identity
 
   local found = false
   _.each(list, function(value, index)
@@ -218,7 +271,7 @@ function _.invoke(list, func, ...)
 end
 
 function _.sortBy(list, func)
-  func = func or identity
+  func = func or _.identity
   local sorted_func = function(a,b)
     if a == nil then return false end
     if b == nil then return true end
@@ -283,7 +336,7 @@ function _.shuffle(list)
   return shuffled
 end
 
-function _.to_array(list)
+function _.toArray(list)
   if not list then return {} end
   
   local cloned = {}
@@ -357,7 +410,7 @@ function _.compose(...)
   return function(...)
     local args = {...}
 
-    _.each(reverse(funcs), function(func)
+    _.each(_.reverse(funcs), function(func)
       args = {func(unpack(args))}
     end)
 
@@ -392,19 +445,19 @@ function _.first(list, count)
   if not list then return nil end
   count = count or 1
 
-  return slice(list, 1, count)
+  return _.slice(list, 1, count)
 end
 
 function _.rest(list, start)
   start = start or 2
 
-  return slice(list, start, #list)
+  return _.slice(list, start, #list)
 end
 
 function _.initial(list, stop)
   stop = stop or (#list - 1)
 
-  return slice(list, 1, stop)
+  return _.slice(list, 1, stop)
 end
 
 function _.last(list, count)
@@ -414,7 +467,7 @@ function _.last(list, count)
     return list[#list]
   else
     local start, stop, array = #list - count + 1, #list, {}
-    return slice(list, start, stop)
+    return _.slice(list, start, stop)
   end
 end
 
@@ -634,7 +687,7 @@ function _.clone(list)
   if not _.isObject(list) then return list end
 
   if _.isArray(list) then
-    return slice(list, 1, #list) 
+    return _.slice(list, 1, #list) 
   else
     return _.extend({}, list)
   end
@@ -710,6 +763,88 @@ function _.chain(value)
   return _(value).chain()
 end
 
+local id_counter = -1
+function _.uniqueId(prefix)
+  id_counter = id_counter + 1
+  if prefix then
+    return prefix .. id_counter
+  else
+    return id_counter
+  end
+end
+
+function _.times(n, func)
+  for i=0, (n-1), 1 do
+    func(i)
+  end
+end
+
+local result = function(self, obj)
+  if _.isObject(self) and self._chain then
+    return _(obj).chain()
+  else
+    return obj
+  end
+end
+  
+
+function _.mixin(obj)
+  _.each(_.functions(obj), function(name)
+    local func = obj[name]
+    _[name] = func
+
+    chainable_mt[name] = function(target, ...)
+      local r = func(target._wrapped, ...)
+      if _.include({'pop','shift'}, name) then
+        return result(target, target._wrapped)
+      else
+        return result(target, r)
+      end
+    end
+  end)
+end
+
+local entityMap = {
+  escape={
+    ['&']='&amp;',
+    ['<']='&lt;',
+    ['>']='&gt;',
+    ['"']='&quot;',
+    ["'"]='&#x27;',
+    ['/']='&#x2F;'
+  }
+}
+entityMap.unescape = _.invert(entityMap.escape)
+
+function _.escape(value)
+  value = value or ''
+  return value:gsub("[" .. _(entityMap.escape).chain():keys():join():value() .. "]", function(s)
+    return entityMap['escape'][s]
+  end) 
+end
+
+function _.unescape(value)
+  value = value or ''
+  _.each(entityMap.unescape, function(escaped, key)
+    value = value:gsub(key, function(s)
+      return escaped 
+    end) 
+  end)
+
+  return value
+end
+
+function _.result(obj, prop)
+  if not obj then return nil end
+  local value = obj[prop]
+  
+  if _.isFunction(value) then
+    return value(obj)
+  else
+    return value
+  end
+end
+
 function _.print_r (t, name, indent)
   local tableList = {}
   function table_r (t, name, indent, full)
@@ -746,28 +881,21 @@ _.take = _.first
 _.drop = _.rest
 _.tail = _.rest
 
-local chainable_mt = {
-  __index = function(target, name)
-    if _[name] then
-      target[name] = function(...)
-
-        target._wrapped = _[name](target._wrapped, ...)
-        return target
-      end
-      return target[name]
-    end
-
-    return nil
-  end
-}
+_.mixin(_)
 
 setmetatable(_,{
   __call = function(target, ...)
-    wrapped = {...}
-    local instance = setmetatable({}, chainable_mt)
-    instance.chain = function() return instance end
+    local wrapped = ...
+    if _.isObject(wrapped) and wrapped._wrapped then return wrapped end
+
+    local instance = setmetatable({}, {__index=chainable_mt})
+    instance.chain = function()
+      instance._chain = true
+      return instance
+    end
     instance.value = function() return instance._wrapped end
-    instance._wrapped = ... 
+
+    instance._wrapped = wrapped
     return instance
   end
 })
