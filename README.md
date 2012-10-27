@@ -204,7 +204,11 @@ Sorts a list into groups and returns a count for the number of objects in each g
 
 ```lua
 _.countBy({1, 2, 3, 4, 5}, function(num) 
-  return num % 2 == 0 ? 'even' : 'odd' 
+  if num % 2 == 0 then
+    return 'even'
+  else
+    return 'odd'
+  end
 end)
 => {odd:=3, even:=2}
 ```
