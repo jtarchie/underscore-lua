@@ -131,9 +131,9 @@ _.contains({1, 2, 3}, 3)
 Calls the method named by methodName on each value in the list. Any extra arguments passed to invoke will be forwarded on to the method invocation.
 
 ```lua
-local dog = {says: function() return "woof" end}
-local cat = {says: function() return "meow" end}
-local cow = {says: function() return "moo" end}
+local dog = {says=function() return "woof" end}
+local cat = {says=function() return "meow" end}
+local cow = {says=function() return "moo" end}
 _.invoke({dog, cat, cow}, 'says')
 => {'woof', 'meow', 'moo'}
 ```
@@ -210,7 +210,7 @@ _.countBy({1, 2, 3, 4, 5}, function(num)
     return 'odd'
   end
 end)
-=> {odd:=3, even:=2}
+=> {odd=3, even=2}
 ```
 
 ## shuffle
