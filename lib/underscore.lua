@@ -116,12 +116,12 @@ end
 
 function _.reduceRight(list, func, memo)
   local init = memo == nil
-  _.each(_.reverse(list), function(value)
+  _.each(_.reverse(list), function(value, key, object)
     if init then
       memo = value
       init = false
     else
-      memo = func(memo, value)
+      memo = func(memo, value, key, object)
     end
   end)
 
@@ -136,8 +136,8 @@ function _.find(list, func)
   if func == nil then return nil end
 
   local result = nil
-  _.any(list, function(value)
-    if func(value) then
+  _.any(list, function(value, key, object)
+    if func(value, key, object) then
       result = value
       return true
     end
@@ -148,8 +148,8 @@ end
 
 function _.select(list, func)
   local found = {}
-  _.each(list, function(value)
-    if func(value) then
+  _.each(list, function(value, key, object)
+    if func(value, key, object) then
       table.insert(found, value)
     end
   end)
@@ -159,8 +159,8 @@ end
 
 function _.reject(list, func)
   local found = {}
-  _.each(list, function(value)
-    if not func(value) then
+  _.each(list, function(value, key, object)
+    if not func(value, key, object) then
       table.insert(found, value)
     end
   end)
@@ -174,8 +174,8 @@ function _.all(list, func)
   func = func or _.identity
 
   local found = true
-  _.each(list, function(value, index)
-    if found and not func(value, index) then
+  _.each(list, function(value, index, object)
+    if found and not func(value, index, object) then
       found = false
     end
   end)
@@ -189,8 +189,8 @@ function _.any(list, func)
   func = func or _.identity
 
   local found = false
-  _.each(list, function(value, index)
-    if not found and func(value, index) then
+  _.each(list, function(value, index, object)
+    if not found and func(value, index, object) then
       found = true
     end
   end)
@@ -227,8 +227,8 @@ function _.max(list, func)
     return -math.huge
   elseif _.isFunction(func) then
     local max = {computed=-math.huge}
-    _.each(list, function(value)
-      local computed = func(value)
+    _.each(list, function(value, key, object)
+      local computed = func(value, key, object)
       if computed >= max.computed then
         max = {computed=computed, value=value}
       end
@@ -244,8 +244,8 @@ function _.min(list, func)
     return math.huge
   elseif _.isFunction(func) then
     local min = {computed=math.huge}
-    _.each(list, function(value)
-      local computed = func(value)
+    _.each(list, function(value, key, object)
+      local computed = func(value, key, object)
       if computed < min.computed then
         min = {computed=computed, value=value}
       end
@@ -297,8 +297,8 @@ function _.groupBy(list, func)
     end
   end
 
-  _.each(list, function(value)
-    local key = group_func(value)
+  _.each(list, function(value, key, object)
+    local key = group_func(value, key, object)
     result[key] = result[key] or {}
     table.insert(result[key], value)
   end)
@@ -315,8 +315,8 @@ function _.countBy(list, func)
     end
   end
 
-  _.each(list, function(value)
-    local key = count_func(value)
+  _.each(list, function(value, key, object)
+    local key = count_func(value, key, object)
     result[key] = result[key] or 0 
     result[key] = result[key] + 1
   end)
@@ -336,8 +336,9 @@ function _.shuffle(list)
   return shuffled
 end
 
-function _.toArray(list)
+function _.toArray(list, ...)
   if not list then return {} end
+  if not _.isObject(list) then list = {list, ...} end
   
   local cloned = {}
   _.each(list, function(value)

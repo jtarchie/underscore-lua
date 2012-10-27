@@ -376,6 +376,11 @@ describe("#toArray", function()
     table.sort(array)
     assert.same(array, {1,2,3})
   end)
+
+  it("handles a list of arguments", function()
+    local array = _.toArray(1,2,3,4)
+    assert.same(array,{1,2,3,4})
+  end)
 end)
 
 describe("#size", function()
