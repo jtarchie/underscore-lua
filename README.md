@@ -25,7 +25,7 @@ _.each({one=1, two=2, three=3}, function(num, key) print(num) end)
 
 `_.map(list, iterator)` Alias: collect
 
-Produces a new array of values by mapping each value in list through a transformation function (iterator). If list is a JavaScript object, iterator's arguments will be (value, key, list).
+Produces a new array of values by mapping each value in list through a transformation function (iterator). If list is a Lua object, iterator's arguments will be (value, key, list).
 
 ```lua
 _.map({1, 2, 3}, function(num) return num * 3 end)
