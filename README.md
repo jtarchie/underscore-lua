@@ -10,9 +10,9 @@ The project is hosted on [GitHub](https://github.com/jtarchie/underscore-lua). Y
 
 ## each
 
-  `_.each(list, iterator)`
-      
-  Iterates over a list of elements, yielding each in turn to an iterator function. Each invocation of iterator is called with three arguments: (element, index, list). If list is a Lua object, iterator's arguments will be (value, key, list).
+`_.each(list, iterator)`
+    
+Iterates over a list of elements, yielding each in turn to an iterator function. Each invocation of iterator is called with three arguments: (element, index, list). If list is a Lua object, iterator's arguments will be (value, key, list).
 
 ```lua
 _.each({1, 2, 3}, print)
@@ -23,15 +23,26 @@ _.each({one=1, two=2, three=3}, function(num, key) print(num) end)
 
 ## map
 
-  `_.map(list, iterator)` Alias: collect
+`_.map(list, iterator)` Alias: collect
 
-  Produces a new array of values by mapping each value in list through a transformation function (iterator). If list is a JavaScript object, iterator's arguments will be (value, key, list).
+Produces a new array of values by mapping each value in list through a transformation function (iterator). If list is a JavaScript object, iterator's arguments will be (value, key, list).
 
 ```lua
 _.map({1, 2, 3}, function(num) return num * 3 end)
 => {3, 6, 9}
 _.map({one=1, two=2, three=3}, function(num, key) return num * 3 end)
 => {3, 6, 9}
+```
+
+## reduce
+
+`_.reduce(list, iterator, memo)` Aliases: inject, foldl 
+
+Also known as inject and foldl, reduce boils down a list of values into a single value. Memo is the initial state of the reduction, and each successive step of it should be returned by iterator. The iterator is passed four arguments: the memo, then the value and index (or key) of the iteration, and finally a reference to the entire list.
+
+```lua
+local sum = _.reduce({1, 2, 3}, function(memo, num) return memo + num end, 0);
+=> 6
 ```
 
 #Arrays

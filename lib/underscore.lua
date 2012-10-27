@@ -98,12 +98,12 @@ end
 
 function _.reduce(list, func, memo)
   local init = memo == nil
-  _.each(list, function(value)
+  _.each(list, function(value, key, object)
     if init then
       memo = value
       init = false
     else
-      memo = func(memo, value)
+      memo = func(memo, value, key, object)
     end
   end)
 
