@@ -228,7 +228,7 @@ _.shuffle({1, 2, 3, 4, 5, 6})
 Converts the list (anything that can be iterated over), into a real Array. Useful for transmuting the arguments object.
 
 ```lua
-_.isArray(1, 2, 3, 4)
+_.toArray(1, 2, 3, 4)
 => [2, 3, 4]
 ```
 
