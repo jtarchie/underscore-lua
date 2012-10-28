@@ -67,9 +67,9 @@ function _.slice(list, start, stop)
   return array
 end
 
-function _.concat(list, ...)
+function _.concat(...)
   local values = _.flatten({...}, true)
-  local cloned = _.clone(list)
+  local cloned = {}
 
   _.each(values, function(v)
     table.insert(cloned, v)

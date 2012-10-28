@@ -333,6 +333,7 @@ describe("#concat", function()
 
   it("can handle non-array values", function()
     assert.same(_.concat(alpha, 1, {2,{3}}), {"a","b","c",1,2,{3}})
+    assert.same(_.concat(4, 5, 6 , 1, {2,{3}}), {4,5,6 ,1,2,{3}})
   end)
 end)
 
