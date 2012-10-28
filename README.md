@@ -324,7 +324,7 @@ _.flatten({1, {2}, {3, {{4}}}}, true)
 
 Returns a copy of the array with all instances of the values removed.
 
-``lua
+```lua
 _.without({1, 2, 1, 0, 3, 1, 4}, 0, 1)
 => {2, 3, 4}
 ```
