@@ -438,6 +438,113 @@ _.range(0)
 => {} 
 ```
 
+## pop
+
+`_.pop(array)`
+
+Removes the last element from an array and returns that value.
+
+```lua
+_.pop({1,2,3,4})
+=> 4
+```
+
+## push
+
+`_.push(array, [elements])`
+
+Adds the list of elements on to the end of an array.
+
+```lua
+local array = {1,2,3}
+_.push(array, 4,5,6)
+=> {1,2,3,4,5,6}
+=> array == {1,2,3,4,5,6}
+```
+
+## shift
+
+`_.shift(array)`
+
+Removes the last element from an array and returns that value.
+
+```lua
+_.shift({1,2,3,4})
+=> 1
+```
+
+## unshift
+
+`_.unshift(array, [elements])`
+
+Adds the list of elements on to the end of an array.
+
+
+```lua
+local array = {1,2,3}
+_.unshift(array, 4,5,6)
+=> {4,5,6,1,2,3}
+=> array == {4,5,6,1,2,3}
+```
+
+## slice
+
+`_.slice(array, begin, [end])`
+
+Returns a portion of the array that starts from begin and returning all the elemtns to the end of the array. If end is provided then it provideds the elements to that position.
+
+```lua
+_.slice({1,2,3,4,5,6,7,8}, 4)
+=> {4,5,6,7,8}
+_.slice({1,2,3,4,5,6,7,8}, 4, 6)
+=> {4,5,6}
+```
+
+## sort
+
+`_.sort(array, [compareFunction])`
+
+Sorts the elements in the array based on the `tostring` value of the element. For numerical values, this puts "80" before "9" in their lexical form.
+
+With the compareFunction, the elements are sorted based on the returned value. This relies on Lua's underlying `table.sort` so the comparison relies the value being compared as less than or grater than.
+
+```lua
+_.sort({"how","are","you","today"})
+=> {"are","how","today","you"}
+_.sort({1,5,10,90})
+=> {1,10,5,90}
+```
+
+## concat
+
+`_.concat(value1, value2, ..., arrayn)`
+
+Creates a new array by concatenating the values passed in. It does not alter the original versions of the values passed in.
+
+```lua
+_.concat(1,2,3,4,5,6)
+=> {1,2,3,4,5,6}
+_.concat({1,2,3},{4,5,6})
+=> {1,2,3,4,5,6}
+```
+
+## join
+
+`_.join(array, [separator])`
+
+Joins the elements of an array into a string. By default the separator is a blank string. If a separator is passed then it will be used as the string that separates the elements in the string.
+
+```lua
+_.join({1,2,3,4,5})
+=> "12345"
+_.join({"Hello", "world"}, ", ")
+=> "Hello, world"
+```
+
+## splice
+
+Not yet Implemented
+
 #Functions
 
 
