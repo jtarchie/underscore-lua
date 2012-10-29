@@ -547,6 +547,75 @@ Not yet Implemented
 
 #Functions
 
+## memoize
+
+`_.memoize(function, [hashFunction])`
+
+Memoizes a given function by caching the computed result. Useful for speeding up slow-running computations. If passed an optional hashFunction, it will be used to compute the hash key for storing the result, based on the arguments to the original function. The default hashFunction just uses the first argument to the memoized function as the key.
+
+```lua
+local fibonacci = _.memoize(function(n)
+  if n < 2 then
+    return n
+  else 
+    return fibonacci(n - 1) + fibonacci(n - 2)
+  end
+end)
+```
+
+## once
+
+`_.once(function)`
+
+Creates a version of the function that can only be called one time. Repeated calls to the modified function will have no effect, returning the value from the original call. Useful for initialization functions, instead of having to set a boolean flag and then check it later.
+
+```lua
+local initialize = _.once(createApplication)
+initialize()
+initialize()
+```
+
+## after
+
+`_.after(count, function)`
+
+Creates a version of the function that will only be run after first being called count times. Useful for grouping asynchronous responses, where you want to be sure that all the async calls have finished, before proceeding.
+
+```lua
+local renderNotes = _.after(_.size(notes), render)
+_.each(notes, function(note)
+  note.asyncSave({success: renderNotes})
+end)
+```
+
+## wrap
+
+`_.wrap(function, wrapper)`
+
+Wraps the first function inside of the wrapper function, passing it as the first argument. This allows the wrapper to execute code before and after the function runs, adjust the arguments, and execute it conditionally.
+
+```lua
+local hello = function(name) return "hello: " + name end
+hello = _.wrap(hello, function(func)
+  return "before, " + func("moe") + ", after"
+end)
+hello()
+=> 'before, hello: moe, after'
+```
+
+## compose
+  
+`_.compose(*functions)`
+
+Returns the composition of a list of functions, where each function consumes the return value of the function that follows. In math terms, composing the functions f(), g(), and h() produces f(g(h())).
+
+```lua
+local greet    = function(name) return "hi: " + name end
+local exclaim  = function(statement) return statement + "!" end
+local welcome = _.compose(exclaim, greet)
+welcome('moe')
+=> 'hi: moe!'
+```
 
 #Objects
 
