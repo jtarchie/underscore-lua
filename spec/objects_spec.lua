@@ -57,6 +57,7 @@ describe("#functions", function()
     }
 
     assert.same(_.functions(list), {'b','d'})
+    assert.same(_.methods(list), {'b','d'})
   end)
 end)
 

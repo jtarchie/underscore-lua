@@ -881,6 +881,7 @@ _.head = _.first
 _.take = _.first
 _.drop = _.rest
 _.tail = _.rest
+_.methods = _.functions
 
 _.mixin(_)
 
