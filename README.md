@@ -983,5 +983,62 @@ _.result(object, 'stuff')
 
 #Chaining
 
+You can use Underscore in either an object-oriented or a functional style, depending on your preference. The following two lines of code are identical ways to double a list of numbers.
+
+```lua
+_.map([1, 2, 3], function(n) return n * 2 end)
+_([1, 2, 3]).map(function(n) return n * 2 end)
+```
+
+Calling chain will cause all future method calls to return wrapped objects. When you've finished the computation, use value to retrieve the final value. Here's an example of chaining together a map/flatten/reduce, in order to get the word count of every word in a song.
+
+```lua
+local lyrics = {
+  {line=1, words="I'm a lumberjack and I'm okay"},
+  {line=2, words="I sleep all night and I work all day"},
+  {line=3, words="He's a lumberjack and he's okay"},
+  {line=4, words="He sleeps all night and he works all day"}
+}
+
+_.chain(lyrics)
+  :map(function(line) return _.split(line.words, ' ') end)
+  :flatten()
+  :reduce(function(counts, word)
+    counts[word] = counts[word] or 0
+    counts[word] = counts[word] + 1
+    return counts
+  end, {})
+  :value()
+
+=> {lumberjack=2, all=4, night=2 ... }
+```
+
+## chain
+
+`_.chain(obj)`
+
+Returns a wrapped object. Calling methods on this object will continue to return wrapped objects until value is used.
+
+```lua
+local stooges = {{name='curly', age=25}, {name='moe', age=21}, {name='larry', age=23}}
+local youngest = _.chain(stooges)
+  :sortBy(function(stooge) return stooge.age end)
+  :map(function(stooge) return stooge.name .. ' is ' .. stooge.age end)
+  :first()
+  :value()
+=> "moe is 21"
+```
+
+## value
+
+`_(obj).value()`
+
+Extracts the value of a wrapped object.
+
+```lua
+_({1, 2, 3}).value();
+=> {1, 2, 3}
+```
+
 
 #Changelog
