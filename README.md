@@ -619,6 +619,266 @@ welcome('moe')
 
 #Objects
 
+## keys
+
+`_.keys(object)`
+
+Retrieve all the names of the object's properties. The order of the keys is not guaranteed to be consistent.
+
+```lua
+_.keys({one=1, two=2, three=3})
+=> {"one", "two", "three"}
+```
+## values
+
+`_.values(object)`
+
+Return all of the values of the object's properties. The order of the values is not guaranteed to be consistent.
+
+```lua
+_.values({one=1, two=2, three=3})
+=> {1, 2, 3}
+```
+
+## pairs
+
+`_.pairs(object)`
+
+Convert an object into a list of [key, value] pairs.
+
+```lua
+_.pairs({one=1, two=2, three=3})
+=> [["one", 1], ["two", 2], ["three", 3]]
+```
+
+## invert
+
+`_.invert(object)`
+
+Returns a copy of the object where the keys have become the values and the values the keys. For this to work, all of your object's values should be unique and string serializable.
+
+```lua
+_.invert({Moe="Moses", Larry="Louis", Curly="Jerome"})
+=> {Moses="Moe", Louis="Larry", Jerome="Curly"}
+```
+
+## functions
+
+`_.functions(object)` Alias: methods
+
+Returns a sorted list of the names of every method in an object — that is to say, the name of every function property of the object.
+
+```lua
+_.functions(_)
+=> {"all", "any", "bind", "bindAll", "clone", "compact", "compose" ... }
+```
+
+## extend
+
+`_.extend(destination, *sources)`
+
+Copy all of the properties in the source objects over to the destination object, and return the destination object. It's in-order, so the last source will override properties of the same name in previous arguments.
+
+```lua
+_.extend({name='moe'}, {age=50})
+=> {name='moe', age=50}
+```
+
+## pick
+
+`_.pick(object, *keys)`
+
+Return a copy of the object, filtered to only have values for the whitelisted keys (or array of valid keys).
+
+```lua
+_.pick({name='moe', age=50, userid='moe1'}, 'name', 'age')
+=> {name='moe', age=50}
+```
+
+## omit
+
+`_.omit(object, *keys)`
+
+Return a copy of the object, filtered to omit the blacklisted keys (or array of keys).
+
+```lua
+_.omit({name='moe', age=50, userid='moe1'}, 'userid')
+=> {name='moe', age=50}
+```
+
+## defaults
+
+`_.defaults(object, *defaults)`
+
+Fill in null and undefined properties in object with values from the defaults objects, and return the object. As soon as the property is filled, further defaults will have no effect.
+
+```lua
+local iceCream = {flavor="chocolate"}
+_.defaults(iceCream, {flavor="vanilla", sprinkles="lots"})
+=> {flavor="chocolate", sprinkles="lots"}
+```
+
+## clone
+
+`_.clone(object)`
+
+Create a shallow-copied clone of the object. Any nested objects or arrays will be copied by reference, not duplicated.
+
+```lua
+_.clone({name='moe'})
+=> {name='moe'}
+```
+
+## tap
+
+`_.tap(object, interceptor)`
+
+Invokes interceptor with the object, and then returns object. The primary purpose of this method is to "tap into" a method chain, in order to perform operations on intermediate results within the chain.
+
+```lua
+_.chain([1,2,3,200])
+  :filter(function(num) return num % 2 == 0 end)
+  :tap(print)
+  --  {2, 200}
+  :map(function(num) return num * num end)
+  :value()
+=> {4, 40000}
+```
+
+## has
+
+`_.has(object, key)`
+
+Does the object contain the given key? Identical to object.hasOwnProperty(key), but uses a safe reference to the hasOwnProperty function, in case it's been overridden accidentally.
+
+```lua
+_.has({a=1, b=2, c=3}, "b")
+=> true
+```
+
+# isEqual
+
+Not yet implemented
+
+## isEmpty
+
+`_.isEmpty(object)`
+
+Returns true if object contains no values.
+
+```lua
+_.isEmpty({1, 2, 3})
+=> false
+_.isEmpty({})
+=> true
+```
+
+## isArray
+
+`_.isArray(object)`
+
+Returns true if object is an Array.
+
+```lua
+_.isArray({1,2,3})
+=> true
+```
+
+## isObject
+
+`_.isObject(value)`
+
+Returns true if value is an Object. Note that JavaScript arrays and functions are objects, while (normal) strings and numbers are not.
+
+```lua
+_.isObject({})
+=> true
+_.isObject(1)
+=> false
+```
+
+## isFunction
+
+`_.isFunction(object)`
+
+Returns true if object is a Function.
+
+```lua
+_.isFunction(print)
+=> true
+```
+
+## isString
+
+`_.isString(object)`
+
+Returns true if object is a String.
+
+```lua
+_.isString("moe")
+=> true
+```
+
+## isNumber
+
+`_.isNumber(object)`
+
+Returns true if object is a Number (including NaN).
+
+```lua
+_.isNumber(8.4 * 5)
+=> true
+```
+
+## isFinite
+
+`_.isFinite(object)`
+
+Returns true if object is a finite Number.
+
+```lua
+_.isFinite(-101)
+=> true
+_.isFinite(math.huge)
+=> false
+```
+
+## isBoolean
+
+`_.isBoolean(object)`
+
+Returns true if object is either true or false.
+
+```lua
+_.isBoolean(nil)
+=> false
+```
+
+## isNaN
+
+`_.isNaN(object)`
+
+Returns true if object is NaN.
+
+```lua
+_.isNaN(0/0)
+=> true
+_.isNaN(1)
+=> false
+```
+
+## isNil
+
+`_.isNil(object)`
+
+Returns true if the value of object is nil.
+
+```lua
+_.isNil(nil)
+=> true
+_.isNil(1)
+=> false
+```
 
 #Utility
 
