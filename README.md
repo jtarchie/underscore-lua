@@ -882,6 +882,104 @@ _.isNil(1)
 
 #Utility
 
+## identity
+
+`_.identity(value)`
+
+Returns the same value that is used as the argument. In math: f(x) = x
+
+This function looks useless, but is used throughout Underscore as a default iterator.
+
+```lua
+local moe = {name='moe'}
+moe == _.identity(moe);
+=> true
+```
+
+## times
+
+`_.times(n, iterator)`
+
+Invokes the given iterator function n times. Each invocation of iterator is called with an index argument.
+
+```lua
+_(3).times(function(n) genie.grantWishNumber(n) end)
+```
+
+## random
+
+`_.random(min, max)`
+
+Returns a random integer between min and max, inclusive. If you only pass one argument, it will return a number between 0 and that number.
+
+```lua
+_.random(0, 100)
+=> 42
+```
+
+## mixin
+
+`_.mixin(object)`
+
+Allows you to extend Underscore with your own utility functions. Pass a hash of {name: function} definitions to have your functions added to the Underscore object, as well as the OOP wrapper.
+
+```lua
+_.mixin({
+  capitalize=function(s)
+    return s:substr(1,1):upper() .. s:substr(2):lower()
+  end
+})
+_("fabio").capitalize();
+=> "Fabio"
+```
+
+## uniqueId
+
+`_.uniqueId([prefix])`
+
+Generate a globally-unique id for client-side models or DOM elements that need one. If prefix is passed, the id will be appended to it. Without prefix, returns an integer.
+
+```lua
+_.uniqueId('contact_')
+=> 'contact_104'
+```
+
+## escape
+
+`_.escape(string)`
+
+Escapes a string for insertion into HTML, replacing &, <, >, ", ', and / characters.
+
+```lua
+_.escape('Curly, Larry & Moe')
+=> "Curly, Larry &amp; Moe"
+```
+
+## unescape
+
+`_.unescape(string)`
+
+Un-escapes a string from HTML to the proper characters  &, <, >, ", ', and /.
+
+```lua
+_.unescape('Curly, Larry &amp Moe')
+=> "Curly, Larry & Moe"
+```
+
+## result
+
+`_.result(object, property)`
+
+If the value of the named property is a function then invoke it; otherwise, return it.
+
+```lua
+var object = {cheese='crumpets', stuff=function() return 'nonsense' end}
+_.result(object, 'cheese')
+=> "crumpets"
+_.result(object, 'stuff')
+=> "nonsense"
+```
+
 
 #Chaining
 
