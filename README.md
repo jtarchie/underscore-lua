@@ -6,7 +6,18 @@
 
 The project is hosted on [GitHub](https://github.com/jtarchie/underscore-lua). You can report bugs and discuss features on the [issues page](https://github.com/jtarchie/underscore-lua/issues), or send tweets to @jtarchie.
 
-#Collection functions (Arrays or Objects)
+# Table of Contents
+
+* [Collection](#collection-functions-arrays-or-objects)
+* [Arrays](#arrays)
+* [Objects](#objects)
+* [String](#string)
+* [Functions](#functions)
+* [Utility](#utility)
+* [Chaining](#chaining)
+* [Changelog](#changelog)
+
+# Collection functions (Arrays or Objects)
 
 ## each
 
@@ -756,7 +767,7 @@ _.has({a=1, b=2, c=3}, "b")
 => true
 ```
 
-# isEqual
+## isEqual
 
 Not yet implemented
 
