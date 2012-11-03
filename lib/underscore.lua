@@ -747,17 +747,39 @@ function _.tap(value, func)
   return value
 end
 
-function _.split(value)
-  if _.isString(value) then
-    local values = {}
-    string.gsub(value, "[^%s+]", function(c)
-      table.insert(values, c)
-    end)
-
-    return values
+function splitIterator(value, pattern, start)
+  if pattern then
+    return string.find(value, pattern, start)
   else
-    return {}
+    if start > string.len(value) then
+      return nil
+    else
+      return start+1, start
+    end
   end
+end
+      
+
+function _.split(value, pattern)
+  if not _.isString(value) then return {} end
+  local values = {}
+  local start = 1
+  local start_pattern, end_pattern = splitIterator(value, pattern, start)
+  
+  while start_pattern do
+    table.insert(
+      values,
+      string.sub(value, start, start_pattern - 1)
+    )
+    start = end_pattern + 1
+    start_pattern, end_pattern = splitIterator(value, pattern, start)
+  end
+
+  if start <= string.len(value) then
+    table.insert(values, string.sub(value, start))
+  end
+    
+  return values
 end
 
 function _.chain(value)
