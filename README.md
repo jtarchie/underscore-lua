@@ -1013,6 +1013,23 @@ _.chain(lyrics)
 => {lumberjack=2, all=4, night=2 ... }
 ```
 
+# String
+
+## split
+
+`_.split(value, [separator])`
+
+Splits a string into an array of strings by separating the string into substrings. If there is no separator is passed, the substring are individual characters.
+
+With a separator, the substring is string up to the separator position. The separator can be a [string pattern](http://www.lua.org/manual/5.2/manual.html#6.4.1).
+
+```lua
+_.split("John Smith")
+=> {"J","o","h","n"," ","S","m","i","t","h"}
+_.split("John Smith", "%s+")
+=> {"John", "Smith"}
+```
+
 ## chain
 
 `_.chain(obj)`
