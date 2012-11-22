@@ -17,6 +17,23 @@ function _.reverse(list)
   end
 end
 
+function _.splice(list, index, howMany, ...)
+  if not _.isArray(list) then return nil end
+
+  local elements = {...}
+  local removed = {}
+
+  for i = 1, #elements, 1 do
+    table.insert(list, i + index + howMany - 1, elements[i])
+  end
+
+  for i = index, index + howMany - 1, 1 do
+    table.insert(removed, table.remove(list, index))
+  end
+  
+  return removed
+end
+
 function _.pop(list)
   return table.remove(list, #list)
 end

@@ -363,3 +363,19 @@ describe("#slice", function()
     assert.same(_.slice(array, 6), {6})
   end)
 end)
+
+describe("#splice", function()
+  it("removes 0 elements from index 2 and inserts 'drum'", function()
+    local array = {"angel", "clown", "mandarin", "surgeon"}
+    local removed = _.splice(array, 2, 0, "drum")
+    assert.same(array, {"angel","drum", "clown", "mandarin", "surgeon"})
+    assert.same(removed, {})
+  end)
+
+  it("removes 2 elements from index 1 and inserts 'parrot', 'blue', and 'grape'", function()
+    local array = {"angel", "clown", "mandarin", "surgeon"}
+    local removed = _.splice(array, 1, 2, "parrot", "blue", "grape")
+    assert.same(array, {"parrot", "blue", "grape", "mandarin", "surgeon"})
+    assert.same(removed, {'angel', 'clown'})
+  end)
+end)
