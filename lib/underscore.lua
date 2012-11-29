@@ -23,6 +23,8 @@ function _.splice(list, index, howMany, ...)
   local elements = {...}
   local removed = {}
 
+  howMany = howMany or #list - index + 1
+
   for i = 1, #elements, 1 do
     table.insert(list, i + index + howMany - 1, elements[i])
   end

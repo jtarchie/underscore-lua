@@ -378,4 +378,11 @@ describe("#splice", function()
     assert.same(array, {"parrot", "blue", "grape", "mandarin", "surgeon"})
     assert.same(removed, {'angel', 'clown'})
   end)
+
+  it("removes all elements when no hasMany is ", function()
+    local array = {"angel", "clown", "mandarin", "surgeon"}
+    local removed = _.splice(array, 3)
+    assert.same(removed, {"mandarin", "surgeon"})
+    assert.same(array, {'angel', 'clown'})
+  end)
 end)
