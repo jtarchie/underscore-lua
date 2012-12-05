@@ -554,7 +554,18 @@ _.join({"Hello", "world"}, ", ")
 
 ## splice
 
-Not yet Implemented
+`_.splice(array, index, [howMany, element1, element2, .., elementN])`
+
+Changes the content of an array, adding new elements while removing old elements. Will start changing elements starting at index and remove howMany elements from that position. Elements can be provided to replace the elements that are being removed.
+
+If hasMany is not specified it remove all elements to the end of the array.
+
+```lua
+local kids = {'bart', 'marsha', 'maggie'}
+_.splice(kids, 2, 1, 'lisa')
+=> {'marsha'}
+array == {'bart', 'lisa', 'maggie'}
+```
 
 #Functions
 
