@@ -1,4 +1,4 @@
-local _ = require("underscore")
+local _ = require("lib/underscore")
 
 describe("#first", function()
   local numbers = {1,2,3}
