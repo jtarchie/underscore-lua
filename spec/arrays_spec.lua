@@ -73,6 +73,11 @@ describe("#flatten", function()
   it("flatten shallowly", function()
     assert.same(_.flatten(list, true), {1,2,3,{{4}}})
   end)
+
+  it("flatten empty", function()
+    list[2] = {}
+    assert.same(_.flatten(list), {1,3,4})
+  end)
 end)
 
 describe("#without", function()
@@ -92,6 +97,10 @@ describe("#uniq", function()
   it("can find the uniq values of an unsorted array", function()
     local list = {1, 2, 1, 3, 1, 4}
     assert.same(_.uniq(list), {1,2,3,4})
+  end)
+
+  it("can find the uniq values of an empty array", function()
+    assert.same(_.uniq({}), {})
   end)
 
   it("can find the uniq values of a sorted array", function()
@@ -117,6 +126,17 @@ describe("#intersection", function()
     local a = {"moe","curly","larry"}
     local b = {"moe","groucho"}
     assert.same(_.intersection(a,b), {"moe"})
+  end)
+  it("intersection with empty is empty", function()
+    local a = {"moe","curly","larry"}
+    local b = {"moe","groucho"}
+    assert.same(_.intersection(a,{}), {})
+    assert.same(_.intersection(b,{}), {})
+  end)
+  it("intersection with inclusion is smaller array", function()
+    local a = {"moe","curly","larry"}
+    local b = {"moe","curly"}
+    assert.same(_.intersection(a,b), b)
   end)
 end)
 
@@ -296,7 +316,18 @@ describe("#sort", function()
 end)
 
 describe("#splice", function()
-
+  it("can remove on element", function()
+    local list = {1,2,3,4}
+    local removed = _.splice(list,2,1)
+    assert.same(list, {1,3,4})
+    assert.same(removed, {2})
+  end)
+  it("can replace sub array", function()
+    local list = {1,2,3,4}
+    local removed = _.splice(list,2,1,8,9)
+    assert.same(list, {1,8,9,3,4})
+    assert.same(removed, {2})
+  end)
 end)
 
 describe("#unshift", function()
@@ -346,6 +377,10 @@ describe("#join", function()
   it("allows the user to specify separator character", function()
     assert.same(_.join({"moe", 30, "curly", 20}, "\t"), "moe\t30\tcurly\t20")
     assert.same(_.join({"a", "b", "c"}, "..."), "a...b...c")
+  end)
+
+  it("joining single element shouldn't change", function()
+    assert.same(_.join({"moe"}, "dontprintit"), "moe")
   end)
 end)
 
