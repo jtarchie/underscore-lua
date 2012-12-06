@@ -730,7 +730,7 @@ function _.isEmpty(value)
 end
 
 function _.isObject(value)
-  return type(value) == "function" or type(value) == "table"
+  return type(value) == "table"
 end
 
 function _.isArray(value)
