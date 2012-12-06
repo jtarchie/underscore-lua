@@ -734,7 +734,7 @@ function _.isObject(value)
 end
 
 function _.isArray(value)
-  return _.isObject(value) and value[1]
+  return type(value) == "table" and (value[1] or next(value) == nil)
 end
 
 function _.isString(value)

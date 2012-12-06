@@ -201,7 +201,7 @@ end)
 
 describe("#isArray", function()
   it("returns true for array, not object", function()
-    assert.is_not.truthy(_.isArray({}))
+    assert.truthy(_.isArray({}))
     assert.truthy(_.isArray({1,2,3}))
     assert.is_not.truthy(_.isArray({one=1,two=2,three=3}))
   end)
