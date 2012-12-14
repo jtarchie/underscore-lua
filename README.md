@@ -6,6 +6,10 @@
 
 The project is hosted on [GitHub](https://github.com/jtarchie/underscore-lua). You can report bugs and discuss features on the [issues page](https://github.com/jtarchie/underscore-lua/issues), or send tweets to @jtarchie.
 
+# Tests
+
+The tests are written using [busted](http://olivinelabs.com/busted/). Run `busted` from the root of the source tree to run all the tests.
+
 # Table of Contents
 
 * [Collection](#collection-functions-arrays-or-objects)
