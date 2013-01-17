@@ -418,6 +418,12 @@ function _.after(times, func)
   end
 end
 
+function _.bind(func, object)
+  return function(...)
+    return func(object, ...)
+  end
+end
+
 function _.wrap(func, wrapper)
   return function(...)
     return wrapper(func, ...)
