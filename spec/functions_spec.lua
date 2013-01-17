@@ -56,6 +56,15 @@ describe("#after", function()
   end)
 end)
 
+describe("#bind", function()
+  local table = {name = "moe"}
+  local greet = function(self) return "hi: " .. self.name end
+  it("returns a closure that binds a function to a table scope ", function()
+    local binded = _.bind(greet, table)
+    assert.equals(binded(), "hi: moe")
+  end)
+end)
+
 describe("#wrap", function()
   it("passes arguments ", function()
     local greet = function(name) return "hi: " .. name end

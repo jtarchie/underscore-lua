@@ -614,6 +614,20 @@ _.each(notes, function(note)
 end)
 ```
 
+## bind
+
+`_.bind(function, table)`
+
+Bind a function to a table, meaning that whenever the function is called, the value of self will be the table. 
+
+```lua
+local func = function(self, greeting) return greeting .. ': ' .. self.name end
+func = _.bind(func, {name = 'moe'})
+func('hi')
+=> 'hi: moe'
+```
+
+
 ## wrap
 
 `_.wrap(function, wrapper)`
