@@ -58,9 +58,14 @@ end)
 
 describe("#bind", function()
   local table = {name = "moe"}
-  local greet = function(self) return "hi: " .. self.name end
+  local greet = function(self, greeting) return greeting .. ": " .. self.name end
   it("returns a closure that binds a function to a table scope ", function()
     local binded = _.bind(greet, table)
+    assert.equals(binded("hi"), "hi: moe")
+  end)
+
+  it("creates a partial application by pre-filling arguments", function()
+    local binded = _.bind(greet, table, "hi")
     assert.equals(binded(), "hi: moe")
   end)
 end)
