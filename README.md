@@ -616,15 +616,20 @@ end)
 
 ## bind
 
-`_.bind(function, table)`
+`_.bind(function, table, [arguments])`
 
-Bind a function to a table, meaning that whenever the function is called, the value of self will be the table. 
+Bind a function to a table, meaning that whenever the function is called, the value of self will be the table. Optionally, bind arguments to the function to pre-fill them, also known as partial application.
 
 ```lua
-local func = function(self, greeting) return greeting .. ': ' .. self.name end
-func = _.bind(func, {name = 'moe'})
+local greet = function(self, greeting) return greeting .. ': ' .. self.name end
+
+func = _.bind(greet, {name = 'moe'})
 func('hi')
 => 'hi: moe'
+
+func = _.bind(greet, {name = 'moe'}, 'hey')
+func()
+=> 'hey: moe'
 ```
 
 
