@@ -39,6 +39,10 @@
 
 <p>The project is hosted on <a href="https://github.com/jtarchie/underscore-lua">GitHub</a>. You can report bugs and discuss features on the <a href="https://github.com/jtarchie/underscore-lua/issues">issues page</a>, or send tweets to <a href="https://github.com/jtarchie" class="user-mention">@jtarchie</a>.</p>
 
+<h1>Tests</h1>
+
+<p>The tests are written using <a href="http://olivinelabs.com/busted/">busted</a>. Run <code>busted</code> from the root of the source tree to run all the tests.</p>
+
 <h1>Table of Contents</h1>
 
 <ul>
@@ -590,6 +594,18 @@
 <span class="n">_</span><span class="p">.</span><span class="n">each</span><span class="p">(</span><span class="n">notes</span><span class="p">,</span> <span class="k">function</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>
   <span class="n">note</span><span class="p">.</span><span class="n">asyncSave</span><span class="p">({</span><span class="n">success</span><span class="p">:</span> <span class="n">renderNotes</span><span class="p">})</span>
 <span class="k">end</span><span class="p">)</span>
+</pre></div>
+
+<h2>bind</h2>
+
+<p><code>_.bind(function, table)</code></p>
+
+<p>Bind a function to a table, meaning that whenever the function is called, the value of self will be the table. </p>
+
+<div class="highlight"><pre><span class="kd">local</span> <span class="n">func</span> <span class="o">=</span> <span class="k">function</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">greeting</span><span class="p">)</span> <span class="k">return</span> <span class="n">greeting</span> <span class="o">..</span> <span class="s1">'</span><span class="s">: '</span> <span class="o">..</span> <span class="n">self</span><span class="p">.</span><span class="n">name</span> <span class="k">end</span>
+<span class="n">func</span> <span class="o">=</span> <span class="n">_</span><span class="p">.</span><span class="n">bind</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="p">{</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'</span><span class="s">moe'</span><span class="p">})</span>
+<span class="n">func</span><span class="p">(</span><span class="s1">'</span><span class="s">hi'</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="s1">'</span><span class="s">hi: moe'</span>
 </pre></div>
 
 <h2>wrap</h2>
