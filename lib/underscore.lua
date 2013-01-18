@@ -418,9 +418,10 @@ function _.after(times, func)
   end
 end
 
-function _.bind(func, object)
+function _.bind(func, context, ...)
+  local arguments = unpack({...})
   return function(...)
-    return func(object, ...)
+    return func(context, unpack(_.concat(arguments,arg)))
   end
 end
 
