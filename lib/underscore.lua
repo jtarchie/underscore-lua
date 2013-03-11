@@ -421,7 +421,7 @@ end
 function _.bind(func, context, ...)
   local arguments = unpack({...})
   return function(...)
-    return func(context, unpack(_.concat(arguments,arg)))
+    return func(context, unpack(_.concat(arguments,...)))
   end
 end
 
