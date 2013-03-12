@@ -404,3 +404,14 @@ describe("#size", function()
     assert.equals(_.size(nil), 0)
   end)
 end)
+
+describe("#findWhere", function()
+  local list = {{a=1, b=2}, {a=2, b=2}, {a=1, b=3}, {a=1, b=4}, {a=2, b=4}}
+  it("finds the first value to match the key value pair", function()
+    local result = _.findWhere(list, {a=1})
+    assert.same(result, {a=1, b=2})
+    result = _.findWhere(list, {b=4})
+    assert.same(result, {a=1, b=4})
+  end)
+end)
+

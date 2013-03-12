@@ -17,6 +17,10 @@ describe("#first", function()
   it("handles nil", function()
     assert.same(_.first(nil), nil)
   end)
+
+  it("returns the first element", function()
+    assert.same(_.first({{a=1,b=2},{c=2,d=3}}), {a=1,b=2})
+  end)
 end)
 
 describe("#rest", function()

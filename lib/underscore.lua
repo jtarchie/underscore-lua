@@ -241,6 +241,12 @@ function _.where(list, properties)
   end)
 end
 
+function _.findWhere(list, properties)
+  return _.first(
+    _.where(list, properties)
+  )
+end
+
 function _.max(list, func)
   if _.isEmpty(list) then
     return -math.huge
@@ -470,9 +476,12 @@ end
 
 function _.first(list, count)
   if not list then return nil end
-  count = count or 1
 
-  return _.slice(list, 1, count)
+  if not count then
+    return list[1]
+  else
+    return _.slice(list, 1, count)
+  end
 end
 
 function _.rest(list, start)
