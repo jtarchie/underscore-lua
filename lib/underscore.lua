@@ -431,6 +431,13 @@ function _.bind(func, context, ...)
   end
 end
 
+function _.partial(func, ...)
+  local args = {...}
+  return function(self, ...)
+    return func(self, _.concat(args, {...}))
+  end
+end
+
 function _.wrap(func, wrapper)
   return function(...)
     return wrapper(func, ...)

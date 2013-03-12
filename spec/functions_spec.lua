@@ -101,3 +101,15 @@ describe("#compose", function()
     assert.equal(composed("moe"), "'hi: moe!'")
   end)
 end)
+
+describe("#partial", function()
+  it("can partially apply arguments to a function", function()
+    local obj = {name='moe'}
+    local func = function(self, ...)
+      return self.name .. ' ' .. _(...):join(' ')
+    end
+
+    obj.func = _.partial(func, 'a', 'b')
+    assert.equals(obj:func('c', 'd'), 'moe a b c d')
+  end)
+end)
