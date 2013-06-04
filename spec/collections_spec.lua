@@ -270,6 +270,19 @@ describe("#invoke", function()
     local index = function(array, index) return array[index] end
     assert.same(_.invoke(values, index, 3), {3,4})
   end)
+
+  describe("when passing self into the invoke function", function()
+    local object = {count=0}
+    function object:incr()
+      self.count = self.count + 1
+      return self.count
+    end
+
+    it("passes the object the method is being invoked on", function()
+      local array = {object, object, object}
+      assert.same(_.invoke(array, 'incr'), {1,2,3})
+    end)
+  end)
 end)
 
 describe("#sortBy", function()
