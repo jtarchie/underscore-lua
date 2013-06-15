@@ -824,6 +824,39 @@ function _.split(value, pattern)
   return values
 end
 
+function _.capitalize(str)
+  str = tostring(str or "")
+  return str:gsub("^%l", string.upper)
+end
+
+function round(num, idp)
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+function _.numberFormat(number, dec, dsep, tsep)
+  if not _.isNumber(number) then return "" end
+  dec = dec or 0
+  dsep = dsep or '.'
+
+  number = tostring(round(number, dec))
+  tsep = tsep or ','
+
+  local parts = _.split(number, '%.')
+  local fnums = parts[1]
+
+  local decimals = ''
+  if dec and dec > 0 then
+    decimals = dsep .. (parts[2] or string.rep('0', dec))
+  end
+  local digits = fnums:reverse():gsub("(%d%d%d)", '%1' .. tsep):reverse() .. decimals
+  if digits:sub(1,1) == tsep then
+    return digits:sub(2)
+  else
+    return digits
+  end
+end
+
 function _.chain(value)
   return _(value).chain()
 end

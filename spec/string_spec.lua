@@ -30,5 +30,34 @@ describe("string functions", function()
         assert.same(_.split("arabbitbrabbitc", "rabbit"), {"a","b","c"})
       end)
     end)
+
+    describe("#capitalize", function()
+      it("capitalizes only the first letter", function()
+        assert.same(_.capitalize('fabio'), 'Fabio');
+        assert.same(_.capitalize('FOO'), 'FOO');
+        assert.same(_(123):capitalize(), '123');
+        assert.same(_.capitalize(''), '');
+        assert.same(_.capitalize(nil), '');
+      end)
+    end)
+
+    describe("#numberFormat", function()
+      it("formats a number to the decimal place", function()
+        assert.same(_.numberFormat(9000), '9,000');
+        assert.same(_.numberFormat(9000, 0), '9,000');
+        assert.same(_.numberFormat(9000, 0, '', ''), '9000');
+        assert.same(_.numberFormat(90000, 2), '90,000.00');
+        assert.same(_.numberFormat(1000.754), '1,001');
+        assert.same(_.numberFormat(1000.754, 2), '1,000.75');
+        assert.same(_.numberFormat(1000.754, 0, ',', '.'), '1.001');
+        assert.same(_.numberFormat(1000.754, 2, ',', '.'), '1.000,75');
+        assert.same(_.numberFormat(1000000.754, 2, ',', '.'), '1.000.000,75');
+        assert.same(_.numberFormat(1000000000), '1,000,000,000');
+        assert.same(_.numberFormat(100000000), '100,000,000');
+        assert.same(_.numberFormat('not number'), '');
+        assert.same(_.numberFormat(), '');
+        assert.same(_.numberFormat(null, '.', ','), '');
+      end)
+    end)
   end)
 end)
