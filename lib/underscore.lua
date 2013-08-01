@@ -425,16 +425,16 @@ function _.after(times, func)
 end
 
 function _.bind(func, context, ...)
-  local arguments = unpack({...})
+  local arguments = {...}
   return function(...)
-    return func(context, unpack(_.concat(arguments,...)))
+    return func(context, unpack(_.concat(arguments, {...})))
   end
 end
 
 function _.partial(func, ...)
   local args = {...}
   return function(self, ...)
-    return func(self, _.concat(args, {...}))
+    return func(self, unpack(_.concat(args, {...})))
   end
 end
 
