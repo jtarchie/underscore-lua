@@ -106,7 +106,7 @@ describe("#partial", function()
   it("can partially apply arguments to a function", function()
     local obj = {name='moe'}
     local func = function(self, ...)
-      return self.name .. ' ' .. _(...):join(' ')
+      return self.name .. ' ' .. _({...}):join(' ')
     end
 
     obj.func = _.partial(func, 'a', 'b')
