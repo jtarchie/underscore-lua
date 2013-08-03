@@ -68,6 +68,17 @@ describe("#bind", function()
     local binded = _.bind(greet, table, "hi")
     assert.equals(binded(), "hi: moe")
   end)
+
+  it("can pass multiple arguments with arrays", function()
+    local obj = {}
+    function obj:test(p1, p2)
+      assert.same(p1, {1,2})
+      assert.same(p2, {3,4})
+    end
+
+    local binded = _.bind(obj.test, obj)
+    binded({1,2},{3,4})
+  end)
 end)
 
 describe("#wrap", function()
@@ -95,7 +106,7 @@ describe("#compose", function()
     assert.equal(composed("moe"), "hi: moe!")
   end)
 
-  it("compes multiple functions", function()
+  it("composes multiple functions", function()
     local quoted = function(sentence) return "'" .. sentence .. "'" end
     local composed = _.compose(quoted, exclaim, greet)
     assert.equal(composed("moe"), "'hi: moe!'")
@@ -105,8 +116,8 @@ end)
 describe("#partial", function()
   it("can partially apply arguments to a function", function()
     local obj = {name='moe'}
-    local func = function(self, ...)
-      return self.name .. ' ' .. _({...}):join(' ')
+    local func = function(self, a , b, c, d)
+      return self.name .. ' ' .. _({a,b,c,d}):join(' ')
     end
 
     obj.func = _.partial(func, 'a', 'b')
