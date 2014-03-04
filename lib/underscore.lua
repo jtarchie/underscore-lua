@@ -789,7 +789,7 @@ function _.tap(value, func)
   return value
 end
 
-function splitIterator(value, pattern, start)
+local function splitIterator(value, pattern, start)
   if pattern then
     return string.find(value, pattern, start)
   else
