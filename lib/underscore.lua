@@ -789,7 +789,7 @@ function _.tap(value, func)
   return value
 end
 
-function splitIterator(value, pattern, start)
+local function splitIterator(value, pattern, start)
   if pattern then
     return string.find(value, pattern, start)
   else
@@ -829,7 +829,7 @@ function _.capitalize(str)
   return str:gsub("^%l", string.upper)
 end
 
-function round(num, idp)
+local function round(num, idp)
   local mult = 10^(idp or 0)
   return math.floor(num * mult + 0.5) / mult
 end
