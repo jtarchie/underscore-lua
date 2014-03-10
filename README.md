@@ -1,3 +1,11 @@
+# Deprecation Warning
+
+I am no longer actively maintaining this project. This was originally a project to help me learn Lua and provide a familiar interface for people in the Lua community. I feel there are better and well maintained libraries currently.
+
+* [Moses](https://github.com/Yonaba/Moses)
+* [Lua Functional](https://github.com/rtsisyk/luafun)
+
+
 *NOTE*: This is a 1-to-1 port of the orignal [Underscore](http://underscorejs.org/) for Javscript. Lua does not have the same concept of run-time loop, so anything functionality that relied on setTimeout has been removed.
 
 # Introduction
